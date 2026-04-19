@@ -1,0 +1,15 @@
+# Source media (too large for git)
+media-originals/
+
+# Python
+venv/
+__pycache__/
+*.pyc
+.env
+
+# Generated logs
+large_videos.txt
+
+# OS
+.DS_Store
+Thumbs.db

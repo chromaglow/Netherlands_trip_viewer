@@ -1,0 +1,7 @@
+Pillow
+pillow-heif
+piexif
+requests
+ffmpeg-python
+anthropic
+python-dotenv

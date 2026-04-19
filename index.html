@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Netherlands Scouting Gallery</title>
+  <meta name="description" content="A map-driven photo and video gallery documenting a scouting trip through Dutch cities.">
+
+  <!-- Mapbox GL JS -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.js"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ══════════════════════════════════════════════════════════
+       DESIGN TOKENS
+       ══════════════════════════════════════════════════════════ */
+    :root {
+      --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+      /* Colors */
+      --bg-primary: #0f0f14;
+      --bg-secondary: #1a1a24;
+      --bg-tertiary: #24243a;
+      --bg-glass: rgba(15, 15, 20, 0.85);
+      --text-primary: #e8e8f0;
+      --text-secondary: #9898b0;
+      --text-muted: #5a5a78;
+      --accent-amber: #F59E0B;
+      --accent-amber-glow: rgba(245, 158, 11, 0.3);
+      --accent-teal: #14B8A6;
+      --accent-teal-glow: rgba(20, 184, 166, 0.3);
+      --border-subtle: rgba(255, 255, 255, 0.06);
+      --border-hover: rgba(255, 255, 255, 0.12);
+
+      /* Layout */
+      --nav-height: 56px;
+      --panel-radius: 12px;
+      --sidebar-width: 320px;
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       RESET & BASE
+       ══════════════════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; }
+    body {
+      font-family: var(--font-main);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       TOP NAV
+       ══════════════════════════════════════════════════════════ */
+    #top-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--nav-height);
+      background: var(--bg-glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 1000;
+    }
+    #top-nav .nav-title {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      background: linear-gradient(135deg, var(--accent-amber), var(--accent-teal));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    #top-nav .nav-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .nav-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-family: var(--font-main);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .nav-btn:hover {
+      background: var(--bg-secondary);
+      border-color: var(--border-hover);
+      color: var(--text-primary);
+    }
+    .nav-btn.active {
+      background: rgba(245, 158, 11, 0.1);
+      border-color: var(--accent-amber);
+      color: var(--accent-amber);
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       MAP CONTAINER
+       ══════════════════════════════════════════════════════════ */
+    #map-container {
+      position: fixed;
+      top: var(--nav-height);
+      left: 0;
+      right: 0;
+      bottom: 0;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* When split-screen is active */
+    #map-container.split {
+      right: 67%;
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       MEDIA PANEL (split-screen right side)
+       ══════════════════════════════════════════════════════════ */
+    #media-panel {
+      position: fixed;
+      top: var(--nav-height);
+      right: 0;
+      width: 67%;
+      bottom: 0;
+      background: var(--bg-primary);
+      border-left: 1px solid var(--border-subtle);
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      z-index: 500;
+      overflow-y: auto;
+    }
+    #media-panel.open {
+      transform: translateX(0);
+    }
+
+    /* Close button */
+    #media-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      width: 36px; height: 36px;
+      background: var(--bg-glass);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 50%;
+      color: var(--text-secondary);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      transition: all 0.2s ease;
+    }
+    #media-close:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    /* Media display area */
+    #media-display {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      width: 100%;
+      min-height: 70vh;
+      max-height: calc(100vh - var(--nav-height) - 120px);
+      background: var(--bg-secondary);
+    }
+    #media-display img,
+    #media-display video {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    /* Navigation arrows */
+    .media-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 44px; height: 44px;
+      background: var(--bg-glass);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 50%;
+      color: var(--text-primary);
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      z-index: 5;
+    }
+    .media-nav:hover {
+      background: var(--bg-tertiary);
+      border-color: var(--border-hover);
+    }
+    #nav-prev { left: 16px; }
+    #nav-next { right: 16px; }
+
+    /* Metadata strip */
+    #media-meta {
+      padding: 20px 24px;
+      border-top: 1px solid var(--border-subtle);
+    }
+    .meta-location {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .meta-detail {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+    .meta-caption {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-primary);
+    }
+
+    /* Similar shots row */
+    #similar-row {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border-subtle);
+    }
+    #similar-row h3 {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+    #similar-thumbnails {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+    #similar-thumbnails::-webkit-scrollbar { height: 4px; }
+    #similar-thumbnails::-webkit-scrollbar-track { background: transparent; }
+    #similar-thumbnails::-webkit-scrollbar-thumb { background: var(--bg-tertiary); border-radius: 2px; }
+    .similar-thumb {
+      flex-shrink: 0;
+      width: 120px; height: 80px;
+      border-radius: 6px;
+      object-fit: cover;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.2s ease;
+    }
+    .similar-thumb:hover {
+      border-color: var(--accent-amber);
+      transform: scale(1.05);
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       FILTER PANEL
+       ══════════════════════════════════════════════════════════ */
+    #filter-panel {
+      position: fixed;
+      top: var(--nav-height);
+      left: 0;
+      width: var(--sidebar-width);
+      bottom: 0;
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border-subtle);
+      transform: translateX(-100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 800;
+      overflow-y: auto;
+      padding: 24px;
+    }
+    #filter-panel.open {
+      transform: translateX(0);
+    }
+    #filter-panel h2 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .filter-section {
+      margin-bottom: 24px;
+    }
+    .filter-section h3 {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+    .filter-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 0;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text-secondary);
+      transition: color 0.15s ease;
+    }
+    .filter-option:hover { color: var(--text-primary); }
+    .filter-option input[type="checkbox"] {
+      width: 16px; height: 16px;
+      accent-color: var(--accent-amber);
+      cursor: pointer;
+    }
+    .filter-clear {
+      background: none;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-family: var(--font-main);
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .filter-clear:hover {
+      border-color: var(--border-hover);
+      color: var(--text-secondary);
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       NARRATIVE PANEL
+       ══════════════════════════════════════════════════════════ */
+    #narrative-panel {
+      position: fixed;
+      top: var(--nav-height);
+      left: 0; right: 0;
+      bottom: 0;
+      background: var(--bg-primary);
+      z-index: 900;
+      overflow-y: auto;
+      display: none;
+      padding: 48px 24px;
+    }
+    #narrative-panel.open {
+      display: block;
+    }
+    #narrative-content {
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.8;
+      font-size: 16px;
+      color: var(--text-primary);
+    }
+    #narrative-content h2 {
+      font-size: 24px;
+      font-weight: 700;
+      margin: 32px 0 16px 0;
+      color: var(--accent-amber);
+    }
+    #narrative-content p {
+      margin-bottom: 16px;
+      color: var(--text-secondary);
+    }
+    #narrative-close {
+      position: fixed;
+      top: calc(var(--nav-height) + 16px);
+      right: 24px;
+      width: 40px; height: 40px;
+      background: var(--bg-glass);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 50%;
+      color: var(--text-secondary);
+      font-size: 20px;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 910;
+      transition: all 0.2s ease;
+    }
+    #narrative-close:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+    #narrative-panel.open ~ #narrative-close {
+      display: flex;
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       ADMIN OVERLAY
+       ══════════════════════════════════════════════════════════ */
+    .admin-modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+    .admin-modal.open { display: flex; }
+    .admin-modal-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--panel-radius);
+      padding: 32px;
+      width: 360px;
+      max-width: 90%;
+    }
+    .admin-modal-box h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .admin-modal-box input {
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-family: var(--font-main);
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+    .admin-modal-box input:focus {
+      outline: none;
+      border-color: var(--accent-amber);
+    }
+    .admin-modal-box .admin-error {
+      color: #ef4444;
+      font-size: 13px;
+      margin-bottom: 8px;
+      display: none;
+    }
+    .admin-submit {
+      width: 100%;
+      padding: 10px;
+      background: var(--accent-amber);
+      border: none;
+      border-radius: 8px;
+      color: #000;
+      font-family: var(--font-main);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+    .admin-submit:hover { opacity: 0.9; }
+
+    /* Admin edit panel */
+    #edit-panel {
+      position: fixed;
+      bottom: 0; right: 0;
+      width: 400px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--panel-radius) var(--panel-radius) 0 0;
+      padding: 24px;
+      display: none;
+      z-index: 1500;
+    }
+    #edit-panel.open { display: block; }
+    #edit-panel textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 10px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-family: var(--font-main);
+      font-size: 14px;
+      resize: vertical;
+      margin-bottom: 12px;
+    }
+    #edit-panel textarea:focus {
+      outline: none;
+      border-color: var(--accent-amber);
+    }
+    .tag-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .tag-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      background: var(--bg-tertiary);
+      border-radius: 20px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .tag-chip .remove-tag {
+      cursor: pointer;
+      font-size: 14px;
+      color: var(--text-muted);
+      transition: color 0.15s ease;
+    }
+    .tag-chip .remove-tag:hover { color: #ef4444; }
+    .tag-input {
+      width: 100%;
+      padding: 8px 10px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-family: var(--font-main);
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+    .tag-input:focus {
+      outline: none;
+      border-color: var(--accent-teal);
+    }
+    .edit-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .edit-actions button {
+      flex: 1;
+      padding: 8px;
+      border-radius: 8px;
+      font-family: var(--font-main);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border-subtle);
+      transition: all 0.2s ease;
+    }
+    .btn-save {
+      background: var(--accent-amber);
+      color: #000;
+      border-color: var(--accent-amber) !important;
+    }
+    .btn-cancel {
+      background: transparent;
+      color: var(--text-secondary);
+    }
+
+    /* Admin FAB */
+    #admin-fab {
+      position: fixed;
+      bottom: 24px; right: 24px;
+      padding: 12px 20px;
+      background: var(--accent-amber);
+      color: #000;
+      border: none;
+      border-radius: 30px;
+      font-family: var(--font-main);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: none;
+      z-index: 1500;
+      box-shadow: 0 4px 20px var(--accent-amber-glow);
+      transition: all 0.2s ease;
+    }
+    #admin-fab:hover { transform: translateY(-2px); box-shadow: 0 6px 28px var(--accent-amber-glow); }
+
+    /* Admin edit icon on media items */
+    .admin-edit-icon {
+      display: none;
+      position: absolute;
+      top: 8px; left: 8px;
+      width: 28px; height: 28px;
+      background: var(--accent-amber);
+      border-radius: 50%;
+      color: #000;
+      font-size: 14px;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+    }
+    body.admin-mode .admin-edit-icon { display: flex; }
+
+    /* ══════════════════════════════════════════════════════════
+       PIN PULSE ANIMATION
+       ══════════════════════════════════════════════════════════ */
+    @keyframes pin-pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+      100% { transform: scale(1); }
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       RESPONSIVE
+       ══════════════════════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      #map-container.split {
+        right: 0;
+        bottom: 55%;
+      }
+      #media-panel {
+        width: 100%;
+        top: 45%;
+        height: 55%;
+        transform: translateY(100%);
+      }
+      #media-panel.open {
+        transform: translateY(0);
+      }
+      #filter-panel {
+        width: 100%;
+      }
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       FOOTER (admin link)
+       ══════════════════════════════════════════════════════════ */
+    #admin-link {
+      position: fixed;
+      bottom: 8px; left: 12px;
+      font-size: 11px;
+      color: var(--text-muted);
+      opacity: 0.3;
+      cursor: pointer;
+      z-index: 100;
+      transition: opacity 0.2s ease;
+    }
+    #admin-link:hover { opacity: 0.7; }
+
+    /* Loading state */
+    .loading-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--bg-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 3000;
+      transition: opacity 0.4s ease;
+    }
+    .loading-overlay.hidden { opacity: 0; pointer-events: none; }
+    .loading-spinner {
+      width: 40px; height: 40px;
+      border: 3px solid var(--bg-tertiary);
+      border-top-color: var(--accent-amber);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+
+<body>
+  <!-- Loading -->
+  <div class="loading-overlay" id="loading-overlay">
+    <div class="loading-spinner"></div>
+  </div>
+
+  <!-- Top Nav -->
+  <nav id="top-nav">
+    <div class="nav-title">Netherlands Scouting Gallery</div>
+    <div class="nav-actions">
+      <button class="nav-btn" id="btn-filter" onclick="toggleFilter()">⊞ Filter</button>
+      <button class="nav-btn" id="btn-narrative" onclick="toggleNarrative()">✦ Narrative</button>
+    </div>
+  </nav>
+
+  <!-- Map -->
+  <div id="map-container">
+    <div id="map"></div>
+  </div>
+
+  <!-- Filter Panel -->
+  <div id="filter-panel">
+    <h2>
+      Filters
+      <button class="filter-clear" onclick="clearAllFilters()">Clear all</button>
+    </h2>
+    <div id="filter-sections"></div>
+  </div>
+
+  <!-- Media Panel -->
+  <div id="media-panel">
+    <button id="media-close" onclick="closeMediaPanel()">✕</button>
+    <div id="media-display">
+      <button class="media-nav" id="nav-prev" onclick="navigateMedia(-1)">‹</button>
+      <button class="media-nav" id="nav-next" onclick="navigateMedia(1)">›</button>
+    </div>
+    <div id="media-meta">
+      <div class="meta-location" id="meta-location"></div>
+      <div class="meta-detail" id="meta-detail"></div>
+      <div class="meta-caption" id="meta-caption"></div>
+    </div>
+    <div id="similar-row" style="display:none;">
+      <h3>Similar shots from other cities</h3>
+      <div id="similar-thumbnails"></div>
+    </div>
+  </div>
+
+  <!-- Narrative Panel -->
+  <div id="narrative-panel">
+    <div id="narrative-content"></div>
+  </div>
+  <button id="narrative-close" onclick="toggleNarrative()">✕</button>
+
+  <!-- Admin Modal -->
+  <div class="admin-modal" id="admin-modal">
+    <div class="admin-modal-box">
+      <h3>Admin Access</h3>
+      <input type="password" id="admin-password" placeholder="Enter password" onkeydown="if(event.key==='Enter')submitAdminPassword()">
+      <div class="admin-error" id="admin-error">Incorrect password</div>
+      <button class="admin-submit" onclick="submitAdminPassword()">Authenticate</button>
+    </div>
+  </div>
+
+  <!-- Admin Edit Panel -->
+  <div id="edit-panel">
+    <h3 style="font-size:14px;margin-bottom:12px;">Edit Media</h3>
+    <label style="font-size:12px;color:var(--text-muted);margin-bottom:4px;display:block;">Caption</label>
+    <textarea id="edit-caption"></textarea>
+    <label style="font-size:12px;color:var(--text-muted);margin-bottom:4px;display:block;">Theme Tags</label>
+    <div class="tag-chips" id="edit-tags"></div>
+    <input class="tag-input" id="edit-tag-input" placeholder="Add tag + Enter" onkeydown="if(event.key==='Enter')addEditTag()">
+    <div class="edit-actions">
+      <button class="btn-cancel" onclick="cancelEdit()">Cancel</button>
+      <button class="btn-save" onclick="saveEdit()">Save</button>
+    </div>
+  </div>
+
+  <!-- Admin FAB -->
+  <button id="admin-fab" onclick="downloadEditedData()"></button>
+
+  <!-- Admin footer link -->
+  <div id="admin-link" onclick="openAdminModal()">Admin</div>
+
+  <script>
+    // ══════════════════════════════════════════════════════════
+    // CONFIGURATION CONSTANTS (tunable)
+    // ══════════════════════════════════════════════════════════
+
+    // Mapbox access token — REPLACE with your own from mapbox.com
+    const MAPBOX_TOKEN = 'YOUR_MAPBOX_TOKEN_HERE';
+
+    // Similar shots matching thresholds
+    const SIMILAR_MATCH_THRESHOLD = 1;  // min shared theme tags required
+    const SIMILAR_MAX_RESULTS = 8;      // max thumbnails shown
+
+    // Local navigation radius when opening a pin (approx. 5 miles)
+    const LOCAL_NAV_RADIUS_KM = 8;
+
+    // Admin password hash — SHA-256 of "recon2026" (change before deploy)
+    const ADMIN_PASSWORD_HASH = '2ff51fba4b8b1137a97ed27dfbd357e5b690665b2f016c3008d95b05febf5bf7e';
+
+    // ══════════════════════════════════════════════════════════
+    // STATE
+    // ══════════════════════════════════════════════════════════
+    let galleryData = { media: [] };
+    let narrativeText = '';
+    let map = null;
+    let currentPinItems = [];     // media items in the current local area
+    let currentItemIndex = 0;     // index within current local list
+    let activeMediaId = null;     // currently active viewed media item
+    let isAdminMode = false;
+    let adminDiffs = {};          // keyed by media id
+    let editingItemId = null;
+    let activeFilters = { city: [], media_type: [], scene_type: [], theme: [] };
+    let allPinCoords = [];        // [{lat, lng, items: [...]}]
+    let currentPinIndex = -1;
+    let activeMarkerEl = null;
+
+    // ══════════════════════════════════════════════════════════
+    // INITIALIZATION
+    // ══════════════════════════════════════════════════════════
+    async function init() {
+      try {
+        // Load data
+        const [dataResp, narrativeResp] = await Promise.all([
+          fetch('data.json'),
+          fetch('narrative.txt').catch(() => null)
+        ]);
+
+        galleryData = await dataResp.json();
+        if (narrativeResp && narrativeResp.ok) {
+          narrativeText = await narrativeResp.text();
+        }
+
+        // Parse URL filter params
+        restoreFiltersFromURL();
+
+        // Init map
+        mapboxgl.accessToken = MAPBOX_TOKEN;
+        map = new mapboxgl.Map({
+          container: 'map',
+          style: 'mapbox://styles/mapbox/dark-v11',
+          center: [5.2913, 52.1326],
+          zoom: 7,
+          attributionControl: false,
+        });
+
+        map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
+        map.addControl(new mapboxgl.AttributionControl({ compact: true }));
+
+        map.on('load', () => {
+          setupMapLayers();
+          applyFilters();
+          document.getElementById('loading-overlay').classList.add('hidden');
+        });
+
+        map.on('error', (e) => {
+          console.warn('Map error:', e.error?.message || e);
+          document.getElementById('loading-overlay').classList.add('hidden');
+        });
+
+        // Fallback: dismiss loading after 5s regardless
+        setTimeout(() => {
+          document.getElementById('loading-overlay').classList.add('hidden');
+        }, 5000);
+
+      } catch (err) {
+        console.error('Init failed:', err);
+        document.getElementById('loading-overlay').classList.add('hidden');
+      }
+    }
+
+    // ══════════════════════════════════════════════════════════
+    // MAP LAYERS & PINS
+    // ══════════════════════════════════════════════════════════
+    function buildGeoJSON(items) {
+      return {
+        type: 'FeatureCollection',
+        features: items.filter(m => m.gps).map(m => ({
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: [m.gps.lng, m.gps.lat] },
+          properties: {
+            id: m.id,
+            media_type: m.media_type,
+            city: m.city || 'Unknown',
+          }
+        }))
+      };
+    }
+
+    function setupMapLayers() {
+      const allItems = galleryData.media || [];
+      const geojson = buildGeoJSON(allItems);
+
+      // Source
+      if (map.getSource('media-pins')) {
+        map.getSource('media-pins').setData(geojson);
+        return;
+      }
+
+      map.addSource('media-pins', {
+        type: 'geojson',
+        data: geojson,
+        cluster: true,
+        clusterMaxZoom: 12,
+        clusterRadius: 50,
+      });
+
+      // Cluster circles
+      map.addLayer({
+        id: 'clusters',
+        type: 'circle',
+        source: 'media-pins',
+        filter: ['has', 'point_count'],
+        paint: {
+          'circle-color': '#F59E0B',
+          'circle-opacity': 0.85,
+          'circle-radius': ['step', ['get', 'point_count'], 18, 10, 24, 30, 32],
+          'circle-stroke-width': 2,
+          'circle-stroke-color': 'rgba(245, 158, 11, 0.3)',
+        }
+      });
+
+      // Cluster count labels
+      map.addLayer({
+        id: 'cluster-count',
+        type: 'symbol',
+        source: 'media-pins',
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': '{point_count_abbreviated}',
+          'text-font': ['DIN Pro Medium', 'Arial Unicode MS Bold'],
+          'text-size': 13,
+        },
+        paint: {
+          'text-color': '#000',
+        }
+      });
+
+      // Individual photo pins (amber)
+      map.addLayer({
+        id: 'photo-pins',
+        type: 'circle',
+        source: 'media-pins',
+        filter: ['all', ['!', ['has', 'point_count']], ['==', ['get', 'media_type'], 'photo']],
+        paint: {
+          'circle-color': '#F59E0B',
+          'circle-radius': 7,
+          'circle-stroke-width': 2,
+          'circle-stroke-color': 'rgba(245, 158, 11, 0.4)',
+          'circle-opacity': 0.9,
+        }
+      });
+
+      // Individual video pins (teal)
+      map.addLayer({
+        id: 'video-pins',
+        type: 'circle',
+        source: 'media-pins',
+        filter: ['all', ['!', ['has', 'point_count']], ['==', ['get', 'media_type'], 'video']],
+        paint: {
+          'circle-color': '#14B8A6',
+          'circle-radius': 7,
+          'circle-stroke-width': 2,
+          'circle-stroke-color': 'rgba(20, 184, 166, 0.4)',
+          'circle-opacity': 0.9,
+        }
+      });
+
+      // Active pin ring for current gallery media
+      map.addSource('active-pin', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: []
+        }
+      });
+
+      map.addLayer({
+        id: 'active-pin-ring',
+        type: 'circle',
+        source: 'active-pin',
+        paint: {
+          'circle-radius': 16,
+          'circle-color': 'rgba(0,0,0,0)',
+          'circle-stroke-width': 3,
+          'circle-stroke-color': '#ef4444',
+          'circle-opacity': 1,
+        }
+      });
+
+      // Click handlers
+      map.on('click', 'clusters', (e) => {
+        const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
+        const clusterId = features[0].properties.cluster_id;
+        map.getSource('media-pins').getClusterExpansionZoom(clusterId, (err, zoom) => {
+          if (err) return;
+          map.easeTo({ center: features[0].geometry.coordinates, zoom: zoom + 1 });
+        });
+      });
+
+      map.on('click', 'photo-pins', (e) => openPinMedia(e.features[0]));
+      map.on('click', 'video-pins', (e) => openPinMedia(e.features[0]));
+
+      // Cursor styles
+      map.on('mouseenter', 'clusters', () => map.getCanvas().style.cursor = 'pointer');
+      map.on('mouseleave', 'clusters', () => map.getCanvas().style.cursor = '');
+      map.on('mouseenter', 'photo-pins', () => map.getCanvas().style.cursor = 'pointer');
+      map.on('mouseleave', 'photo-pins', () => map.getCanvas().style.cursor = '');
+      map.on('mouseenter', 'video-pins', () => map.getCanvas().style.cursor = 'pointer');
+      map.on('mouseleave', 'video-pins', () => map.getCanvas().style.cursor = '');
+    }
+
+    // ══════════════════════════════════════════════════════════
+    // PIN CLICK → MEDIA VIEW
+    // ══════════════════════════════════════════════════════════
+    function openPinMedia(feature) {
+      const clickedId = feature.properties.id;
+      const coords = feature.geometry.coordinates;
+      const targetLat = coords[1];
+      const targetLng = coords[0];
+
+      // Find local items around the clicked pin within a 5-mile radius
+      const items = getFilteredItems()
+        .filter(m => {
+          if (!m.gps) return false;
+          return haversineDistance(targetLat, targetLng, m.gps.lat, m.gps.lng) <= LOCAL_NAV_RADIUS_KM;
+        })
+        .sort((a, b) => {
+          const da = haversineDistance(targetLat, targetLng, a.gps.lat, a.gps.lng);
+          const db = haversineDistance(targetLat, targetLng, b.gps.lat, b.gps.lng);
+          return da - db;
+        });
+
+      if (items.length === 0) return;
+
+      const clickedIdx = items.findIndex(m => m.id === clickedId);
+      currentPinItems = items;
+      currentItemIndex = clickedIdx >= 0 ? clickedIdx : 0;
+
+      document.getElementById('map-container').classList.add('split');
+      document.getElementById('media-panel').classList.add('open');
+      setTimeout(() => map.resize(), 450);
+
+      showCurrentMedia();
+    }
+
+    function buildPinList() {
+      const items = getFilteredItems().filter(m => m.gps);
+      const pinMap = {};
+      items.forEach(m => {
+        const key = `${m.gps.lat.toFixed(4)},${m.gps.lng.toFixed(4)}`;
+        if (!pinMap[key]) pinMap[key] = { lat: m.gps.lat, lng: m.gps.lng, items: [] };
+        pinMap[key].items.push(m);
+      });
+      allPinCoords = Object.values(pinMap);
+
+      // Find current pin index
+      if (currentPinItems.length > 0 && currentPinItems[0].gps) {
+        const cur = currentPinItems[0].gps;
+        let minDist = Infinity;
+        allPinCoords.forEach((pin, i) => {
+          const d = haversineDistance(cur.lat, cur.lng, pin.lat, pin.lng);
+          if (d < minDist) { minDist = d; currentPinIndex = i; }
+        });
+      }
+    }
+
+    function showCurrentMedia() {
+      const item = currentPinItems[currentItemIndex];
+      if (!item) return;
+
+      const display = document.getElementById('media-display');
+      // Remove old media (keep nav buttons)
+      const oldMedia = display.querySelector('.media-content');
+      if (oldMedia) oldMedia.remove();
+
+      let mediaEl;
+      if (item.media_type === 'video' && item.video_src) {
+        mediaEl = document.createElement('video');
+        mediaEl.src = item.video_src;
+        mediaEl.controls = true;
+        mediaEl.autoplay = false;
+        mediaEl.className = 'media-content';
+      } else {
+        mediaEl = document.createElement('img');
+        mediaEl.src = item.display_src || item.thumbnail;
+        mediaEl.alt = item.city || 'Photo';
+        mediaEl.loading = 'lazy';
+        mediaEl.className = 'media-content';
+      }
+
+      display.insertBefore(mediaEl, display.querySelector('#nav-next'));
+
+      // Metadata
+      const location = [item.city, item.neighborhood, item.street].filter(Boolean).join(' · ');
+      document.getElementById('meta-location').textContent = location || 'Unknown Location';
+
+      const dateStr = item.date || '';
+      const timeStr = item.time_of_day ? ` · ${item.time_of_day}` : '';
+      const typeIcon = item.media_type === 'video' ? '🎬' : '📷';
+      document.getElementById('meta-detail').textContent = `${typeIcon} ${dateStr}${timeStr}`;
+
+      const caption = item.author_caption ?? item.draft_caption ?? '';
+      document.getElementById('meta-caption').textContent = caption;
+
+      // Fly map to pin
+      if (item.gps) {
+        map.flyTo({ center: [item.gps.lng, item.gps.lat], zoom: Math.max(map.getZoom(), 13), duration: 800 });
+      }
+
+      updateActivePin(item);
+      // Update similar shots
+      updateSimilarShots(item);
+    }
+
+    function updateActivePin(item) {
+      activeMediaId = item?.id || null;
+      if (!map || !map.getSource('active-pin')) return;
+      if (!item?.gps) {
+        map.getSource('active-pin').setData({ type: 'FeatureCollection', features: [] });
+        return;
+      }
+
+      const feature = {
+        type: 'Feature',
+        geometry: { type: 'Point', coordinates: [item.gps.lng, item.gps.lat] },
+        properties: { id: item.id }
+      };
+      map.getSource('active-pin').setData({ type: 'FeatureCollection', features: [feature] });
+    }
+
+    // ══════════════════════════════════════════════════════════
+    // MEDIA NAVIGATION
+    // ══════════════════════════════════════════════════════════
+    function navigateMedia(direction) {
+      const newIdx = currentItemIndex + direction;
+      if (newIdx >= 0 && newIdx < currentPinItems.length) {
+        currentItemIndex = newIdx;
+        showCurrentMedia();
+      }
+    }
+
+    function advanceToNearestPin(direction) {
+      if (!currentPinItems[0] || !currentPinItems[0].gps) return;
+      const cur = currentPinItems[0].gps;
+
+      // Sort other pins by distance
+      const otherPins = allPinCoords
+        .map((pin, i) => ({ ...pin, idx: i }))
+        .filter(pin => pin.idx !== currentPinIndex)
+        .map(pin => ({
+          ...pin,
+          dist: haversineDistance(cur.lat, cur.lng, pin.lat, pin.lng)
+        }))
+        .sort((a, b) => a.dist - b.dist);
+
+      if (otherPins.length === 0) return;
+
+      const nextPin = otherPins[0]; // nearest
+      currentPinItems = nextPin.items;
+      currentItemIndex = direction > 0 ? 0 : nextPin.items.length - 1;
+      currentPinIndex = nextPin.idx;
+
+      // Fly to new pin
+      map.flyTo({
+        center: [nextPin.lng, nextPin.lat],
+        zoom: Math.max(map.getZoom(), 14),
+        duration: 1200,
+      });
+
+      showCurrentMedia();
+    }
+
+    function closeMediaPanel() {
+      document.getElementById('map-container').classList.remove('split');
+      document.getElementById('media-panel').classList.remove('open');
+      setTimeout(() => map.resize(), 450);
+    }
+
+    // ══════════════════════════════════════════════════════════
+    // SIMILAR SHOTS
+    // ══════════════════════════════════════════════════════════
+    function updateSimilarShots(item) {
+      const container = document.getElementById('similar-thumbnails');
+      const row = document.getElementById('similar-row');
+      container.innerHTML = '';
+
+      if (!item.theme_tags || item.theme_tags.length === 0) {
+        row.style.display = 'none';
+        return;
+      }
+
+      const matches = (galleryData.media || [])
+        .filter(m => {
+          if (m.id === item.id) return false;
+          if (m.city === item.city) return false;
+          if (!m.thumbnail) return false;
+
+          // Check shared theme tags
+          const sharedThemes = (m.theme_tags || []).filter(t => item.theme_tags.includes(t));
+          if (sharedThemes.length < SIMILAR_MATCH_THRESHOLD) return false;
+
+          // Check shared scene type
+          const mScenes = m.tags?.scene_type || [];
+          const iScenes = item.tags?.scene_type || [];
+          const sharedScenes = mScenes.filter(s => iScenes.includes(s));
+          if (sharedScenes.length === 0) return false;
+
+          return true;
+        })
+        .sort((a, b) => {
+          const aShared = (a.theme_tags || []).filter(t => item.theme_tags.includes(t)).length;
+          const bShared = (b.theme_tags || []).filter(t => item.theme_tags.includes(t)).length;
+          return bShared - aShared;
+        })
+        .slice(0, SIMILAR_MAX_RESULTS);
+
+      if (matches.length === 0) {
+        row.style.display = 'none';
+        return;
+      }
+
+      row.style.display = 'block';
+      matches.forEach(m => {
+        const img = document.createElement('img');
+        img.src = m.thumbnail;
+        img.className = 'similar-thumb';
+        img.alt = m.city || '';
+        img.onclick = () => navigateToItem(m.id);
+        container.appendChild(img);
+      });
+    }
+
+    function navigateToItem(mediaId) {
+      const item = galleryData.media.find(m => m.id === mediaId);
+      if (!item || !item.gps) return;
+
+      const centerLat = item.gps.lat;
+      const centerLng = item.gps.lng;
+      const items = getFilteredItems()
+        .filter(m => m.gps && haversineDistance(centerLat, centerLng, m.gps.lat, m.gps.lng) <= LOCAL_NAV_RADIUS_KM)
+        .sort((a, b) => {
+          const da = haversineDistance(centerLat, centerLng, a.gps.lat, a.gps.lng);
+          const db = haversineDistance(centerLat, centerLng, b.gps.lat, b.gps.lng);
+          return da - db;
+        });
+
+      currentPinItems = items;
+      currentItemIndex = currentPinItems.findIndex(m => m.id === mediaId);
+      if (currentItemIndex < 0) currentItemIndex = 0;
+
+      if (!document.getElementById('media-panel').classList.contains('open')) {
+        document.getElementById('map-container').classList.add('split');
+        document.getElementById('media-panel').classList.add('open');
+        setTimeout(() => map.resize(), 450);
+      }
+
+      showCurrentMedia();
+    }
+
+    // ══════════════════════════════════════════════════════════
+    // FILTER PANEL
+    // ══════════════════════════════════════════════════════════
+    function toggleFilter() {
+      const panel = document.getElementById('filter-panel');
+      const btn = document.getElementById('btn-filter');
+      panel.classList.toggle('open');
+      btn.classList.toggle('active');
+
+      if (panel.classList.contains('open')) {
+        populateFilters();
+      }
+    }
+
+    function populateFilters() {
+      const section = document.getElementById('filter-sections');
+      section.innerHTML = '';
+
+      const items = galleryData.media || [];
+
+      // Collect unique values
+      const cities = [...new Set(items.map(m => m.city).filter(Boolean))].sort();
+      const mediaTypes = [...new Set(items.map(m => m.media_type))].sort();
+      const sceneTypes = [...new Set(items.flatMap(m => m.tags?.scene_type || []))].sort();
+      const themes = [...new Set(items.flatMap(m => m.theme_tags || []))].sort();
+
+      const sections = [
+        { key: 'city', title: 'City', values: cities },
+        { key: 'media_type', title: 'Media Type', values: mediaTypes },
+        { key: 'scene_type', title: 'Scene Type', values: sceneTypes },
+        { key: 'theme', title: 'Theme', values: themes },
+      ];
+
+      sections.forEach(s => {
+        if (s.values.length === 0) return;
+        const div = document.createElement('div');
+        div.className = 'filter-section';
+        div.innerHTML = `<h3>${s.title}</h3>`;
+        s.values.forEach(val => {
+          const label = document.createElement('label');
+          label.className = 'filter-option';
+          const checked = activeFilters[s.key].includes(val) ? 'checked' : '';
+          label.innerHTML = `<input type="checkbox" ${checked} onchange="onFilterChange('${s.key}','${val.replace(/'/g, "\\'")}',this.checked)"> ${val}`;
+          div.appendChild(label);
+        });
+        section.appendChild(div);
+      });
+    }
+
+    function onFilterChange(key, value, checked) {
+      if (checked) {
+        if (!activeFilters[key].includes(value)) activeFilters[key].push(value);
+      } else {
+        activeFilters[key] = activeFilters[key].filter(v => v !== value);
+      }
+      applyFilters();
+      serializeFiltersToURL();
+    }
+
+    function clearAllFilters() {
+      activeFilters = { city: [], media_type: [], scene_type: [], theme: [] };
+      applyFilters();
+      serializeFiltersToURL();
+      populateFilters();
+    }
+
+    function getFilteredItems() {
+      return (galleryData.media || []).filter(m => {
+        if (activeFilters.city.length > 0 && !activeFilters.city.includes(m.city)) return false;
+        if (activeFilters.media_type.length > 0 && !activeFilters.media_type.includes(m.media_type)) return false;
+        if (activeFilters.scene_type.length > 0) {
+          const scenes = m.tags?.scene_type || [];
+          if (!activeFilters.scene_type.some(s => scenes.includes(s))) return false;
+        }
+        if (activeFilters.theme.length > 0) {
+          const themes = m.theme_tags || [];
+          if (!activeFilters.theme.some(t => themes.includes(t))) return false;
+        }
+        return true;
+      });
+    }
+
+    function applyFilters() {
+      const filtered = getFilteredItems();
+      const geojson = buildGeoJSON(filtered);
+      if (map.getSource('media-pins')) {
+        map.getSource('media-pins').setData(geojson);
+      }
+    }
+
+    function serializeFiltersToURL() {
+      const params = new URLSearchParams();
+      Object.entries(activeFilters).forEach(([key, vals]) => {
+        vals.forEach(v => params.append(key, v));
+      });
+      const qs = params.toString();
+      const url = qs ? `${window.location.pathname}?${qs}` : window.location.pathname;
+      window.history.replaceState(null, '', url);
+    }
+
+    function restoreFiltersFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      ['city', 'media_type', 'scene_type', 'theme'].forEach(key => {
+        activeFilters[key] = params.getAll(key);
+      });
+    }
+
+    // ══════════════════════════════════════════════════════════
+    // NARRATIVE VIEW
+    // ══════════════════════════════════════════════════════════
+    function toggleNarrative() {
+      const panel = document.getElementById('narrative-panel');
+      const btn = document.getElementById('btn-narrative');
+      const closeBtn = document.getElementById('narrative-close');
+
+      panel.classList.toggle('open');
+      btn.classList.toggle('active');
+      closeBtn.style.display = panel.classList.contains('open') ? 'flex' : 'none';
+
+      if (panel.classList.contains('open')) {
+        renderNarrative();
+      }
+    }
+
+    function renderNarrative() {
+      const container = document.getElementById('narrative-content');
+      if (!narrativeText || !narrativeText.trim()) {
+        container.innerHTML = '<p style="color:var(--text-muted);text-align:center;margin-top:80px;">Narrative coming soon.</p>';
+        return;
+      }
+
+      const cities = [...new Set((galleryData.media || []).map(m => m.city).filter(Boolean))];
+      const lines = narrativeText.split('\n');
+      let html = '';
+
+      lines.forEach(line => {
+        const trimmed = line.trim();
+        if (!trimmed) {
+          html += '<br>';
+          return;
+        }
+        // Check if heading: city name or ALL-CAPS
+        const isCity = cities.some(c => trimmed.toLowerCase() === c.toLowerCase());
+        const isAllCaps = trimmed === trimmed.toUpperCase() && trimmed.length > 2 && /[A-Z]/.test(trimmed);
+
+        if (isCity || isAllCaps) {
+          html += `<h2>${trimmed}</h2>`;
+        } else {
+          html += `<p>${trimmed}</p>`;
+        }
+      });
+
+      container.innerHTML = html;
+    }
+
+    // ══════════════════════════════════════════════════════════
+    // ADMIN MODE
+    // ══════════════════════════════════════════════════════════
+    function openAdminModal() {
+      if (isAdminMode) return;
+      document.getElementById('admin-modal').classList.add('open');
+      document.getElementById('admin-password').focus();
+    }
+
+    async function submitAdminPassword() {
+      const input = document.getElementById('admin-password').value;
+      const hash = await sha256(input);
+
+      if (hash === ADMIN_PASSWORD_HASH) {
+        isAdminMode = true;
+        document.body.classList.add('admin-mode');
+        document.getElementById('admin-modal').classList.remove('open');
+        document.getElementById('admin-password').value = '';
+        document.getElementById('admin-error').style.display = 'none';
+      } else {
+        document.getElementById('admin-error').style.display = 'block';
+      }
+    }
+
+    async function sha256(message) {
+      const msgBuffer = new TextEncoder().encode(message);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function openEditPanel(itemId) {
+      if (!isAdminMode) return;
+      const item = galleryData.media.find(m => m.id === itemId);
+      if (!item) return;
+
+      editingItemId = itemId;
+      const diff = adminDiffs[itemId] || {};
+      document.getElementById('edit-caption').value = diff.author_caption ?? item.author_caption ?? item.draft_caption ?? '';
+
+      // Tags
+      const tags = diff.theme_tags ?? item.theme_tags ?? [];
+      renderEditTags(tags);
+
+      document.getElementById('edit-panel').classList.add('open');
+    }
+
+    function renderEditTags(tags) {
+      const container = document.getElementById('edit-tags');
+      container.innerHTML = '';
+      tags.forEach(tag => {
+        const chip = document.createElement('span');
+        chip.className = 'tag-chip';
+        chip.innerHTML = `${tag} <span class="remove-tag" onclick="removeEditTag('${tag.replace(/'/g, "\\'")}')">&times;</span>`;
+        container.appendChild(chip);
+      });
+    }
+
+    function addEditTag() {
+      const input = document.getElementById('edit-tag-input');
+      const tag = input.value.trim();
+      if (!tag) return;
+      input.value = '';
+
+      const container = document.getElementById('edit-tags');
+      const existing = [...container.querySelectorAll('.tag-chip')].map(c => c.textContent.replace('×', '').trim());
+      if (existing.includes(tag)) return;
+
+      existing.push(tag);
+      renderEditTags(existing);
+    }
+
+    function removeEditTag(tag) {
+      const container = document.getElementById('edit-tags');
+      const tags = [...container.querySelectorAll('.tag-chip')]
+        .map(c => c.textContent.replace('×', '').trim())
+        .filter(t => t !== tag);
+      renderEditTags(tags);
+    }
+
+    function saveEdit() {
+      if (!editingItemId) return;
+
+      const caption = document.getElementById('edit-caption').value;
+      const tags = [...document.getElementById('edit-tags').querySelectorAll('.tag-chip')]
+        .map(c => c.textContent.replace('×', '').trim());
+
+      adminDiffs[editingItemId] = { author_caption: caption, theme_tags: tags };
+
+      // Update in-memory data for immediate display
+      const item = galleryData.media.find(m => m.id === editingItemId);
+      if (item) {
+        item.author_caption = caption;
+        item.theme_tags = tags;
+      }
+
+      // Refresh display if current
+      if (currentPinItems[currentItemIndex]?.id === editingItemId) {
+        showCurrentMedia();
+      }
+
+      cancelEdit();
+      updateAdminFAB();
+    }
+
+    function cancelEdit() {
+      editingItemId = null;
+      document.getElementById('edit-panel').classList.remove('open');
+    }
+
+    function updateAdminFAB() {
+      const fab = document.getElementById('admin-fab');
+      const count = Object.keys(adminDiffs).length;
+      if (count > 0) {
+        fab.textContent = `Download data.json (${count} edit${count > 1 ? 's' : ''})`;
+        fab.style.display = 'block';
+      } else {
+        fab.style.display = 'none';
+      }
+    }
+
+    function downloadEditedData() {
+      // Deep clone
+      const output = JSON.parse(JSON.stringify(galleryData));
+
+      // Apply diffs
+      Object.entries(adminDiffs).forEach(([id, diff]) => {
+        const item = output.media.find(m => m.id === id);
+        if (item) {
+          if (diff.author_caption !== undefined) item.author_caption = diff.author_caption;
+          if (diff.theme_tags !== undefined) item.theme_tags = diff.theme_tags;
+        }
+      });
+
+      // Trigger download
+      const blob = new Blob([JSON.stringify(output, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'data.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // ══════════════════════════════════════════════════════════
+    // UTILITY
+    // ══════════════════════════════════════════════════════════
+    function haversineDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371; // km
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (!document.getElementById('media-panel').classList.contains('open')) return;
+
+      if (e.key === 'ArrowRight') { navigateMedia(1); e.preventDefault(); }
+      else if (e.key === 'ArrowLeft') { navigateMedia(-1); e.preventDefault(); }
+      else if (e.key === 'Escape') { closeMediaPanel(); e.preventDefault(); }
+    });
+
+    // Start
+    init();
+  </script>
+</body>
+</html>
