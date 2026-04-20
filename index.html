@@ -753,8 +753,8 @@
   <nav id="top-nav">
     <div class="nav-title">Netherlands Scouting Gallery</div>
     <div class="nav-actions">
-      <button class="nav-btn" id="btn-filter" onclick="toggleFilter()">âŠž Filter</button>
-      <button class="nav-btn" id="btn-narrative" onclick="toggleNarrative()">âœ¦ Narrative</button>
+      <button class="nav-btn" id="btn-filter" onclick="toggleFilter()">⊞ž Filter</button>
+      <button class="nav-btn" id="btn-narrative" onclick="toggleNarrative()">✦ Narrative</button>
     </div>
   </nav>
 
@@ -774,10 +774,10 @@
 
   <!-- Media Panel -->
   <div id="media-panel">
-    <button id="media-close" onclick="closeMediaPanel()">âœ•</button>
+    <button id="media-close" onclick="closeMediaPanel()">✕</button>
     <div id="media-display">
-      <button class="media-nav" id="nav-prev" onclick="navigateMedia(-1)">â€¹</button>
-      <button class="media-nav" id="nav-next" onclick="navigateMedia(1)">â€º</button>
+      <button class="media-nav" id="nav-prev" onclick="navigateMedia(-1)">‹</button>
+      <button class="media-nav" id="nav-next" onclick="navigateMedia(1)">›</button>
     </div>
     <div id="media-meta">
       <div class="meta-location" id="meta-location"></div>
@@ -794,7 +794,7 @@
   <div id="narrative-panel">
     <div id="narrative-content"></div>
   </div>
-  <button id="narrative-close" onclick="toggleNarrative()">âœ•</button>
+  <button id="narrative-close" onclick="toggleNarrative()">✕</button>
 
   <!-- Admin Modal -->
   <div class="admin-modal" id="admin-modal">
@@ -1138,12 +1138,12 @@
       display.insertBefore(mediaEl, display.querySelector('#nav-next'));
 
       // Metadata
-      const location = [item.city, item.neighborhood, item.street].filter(Boolean).join(' Â· ');
+      const location = [item.city, item.neighborhood, item.street].filter(Boolean).join(' ');
       document.getElementById('meta-location').textContent = location || 'Unknown Location';
 
       const dateStr = item.date || '';
-      const timeStr = item.time_of_day ? ` Â· ${item.time_of_day}` : '';
-      const typeIcon = item.media_type === 'video' ? 'ðŸŽ¬' : 'ðŸ“·';
+      const timeStr = item.time_of_day ? ` · ${item.time_of_day}` : '';
+      const typeIcon = item.media_type === 'video' ? '🎬' : 'ðŸ“·';
       document.getElementById('meta-detail').textContent = `${typeIcon} ${dateStr}${timeStr}`;
 
       const caption = item.author_caption ?? item.draft_caption ?? '';
@@ -1633,3 +1633,4 @@
   </script>
 </body>
 </html>
+
