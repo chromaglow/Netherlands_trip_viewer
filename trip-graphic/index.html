@@ -243,11 +243,10 @@ body {
 
 /* Reveal animation */
 .reveal {
-  opacity: 0;
-  transform: translateY(18px);
-  transition: opacity 0.65s ease, transform 0.65s ease;
+  opacity: 1;
+  transform: translateY(0);
+  transition: none;
 }
-/* LIVE MODE: elements start hidden, IntersectionObserver adds .visible to animate them in */
 .reveal.visible { opacity: 1; transform: translateY(0); }
 .reveal-d1 { transition-delay: 0.1s; }
 .reveal-d2 { transition-delay: 0.2s; }
