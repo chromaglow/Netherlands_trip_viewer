@@ -3,938 +3,2903 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Utrecht vs Leiden — A Housing Decision</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet">
+<title>Utrecht · Leiden · Delft — A Housing Decision</title>
 <style>
+
+/* ============================================================
+   MODULE 1: FOUNDATION
+   ============================================================ */
 :root {
-  --canal-blue:#1B4F72;--canal-blue-mid:#2E86AB;--canal-blue-light:#A8D5E2;--canal-blue-wash:#EAF4F8;
-  --brick-orange:#C0492B;--brick-orange-mid:#E67E52;--brick-orange-light:#F5C4B0;--brick-orange-wash:#FDF0EB;
-  --ink:#1A1A1A;--ink-mid:#3D3D3D;--ink-light:#6B6B6B;--stone:#9A9585;
-  --parchment:#F7F4EE;--white:#FDFCFA;--pug-gold:#D4A843;
-  --font-display:'Playfair Display',Georgia,serif;
-  --font-body:'DM Sans',system-ui,sans-serif;
-  --font-mono:'DM Mono','Courier New',monospace;
+  --u-dark:    #1B4F72;
+  --u-mid:     #2E86AB;
+  --u-light:   #A8D5E2;
+  --u-wash:    #EAF4F8;
+  --l-dark:    #C0492B;
+  --l-mid:     #E67E52;
+  --l-light:   #F5C4B0;
+  --l-wash:    #FDF0EB;
+  --d-dark:    #2D6A4F;
+  --d-mid:     #52B788;
+  --d-light:   #B7E4C7;
+  --d-wash:    #F0FAF4;
+  --pug:       #D4A843;
+  --pug-wash:  #FEF9EC;
+  --ink:       #1A1A1A;
+  --ink-mid:   #3D3D3D;
+  --ink-light: #6B6B6B;
+  --stone:     #9A9585;
+  --parchment: #F7F4EE;
+  --white:     #FDFCFA;
+  --font-display: 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
+  --font-body:    -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-mono:    'Courier New', Courier, monospace;
 }
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
-body{background:var(--parchment);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;}
-.container{max-width:860px;margin:0 auto;padding:0 32px;}
-.container--wide{max-width:1060px;margin:0 auto;padding:0 32px;}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--parchment);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap       { max-width: 900px;  margin: 0 auto; padding: 0 32px; }
+.wrap--wide { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
 
-/* Two-layer grammar */
-.data-layer{background:var(--white);border:1px solid rgba(27,79,114,0.12);border-radius:4px 4px 0 0;padding:48px 56px 36px;position:relative;margin-top:48px;}
-.data-layer::before{content:'THE DATA';font-family:var(--font-mono);font-size:9px;font-weight:500;letter-spacing:0.18em;color:var(--stone);position:absolute;top:16px;left:56px;}
-.takeaway-layer{background:var(--ink);color:var(--white);border-radius:0 0 4px 4px;padding:32px 56px;position:relative;}
-.takeaway-layer::before{content:'THE TAKEAWAY';font-family:var(--font-mono);font-size:9px;font-weight:500;letter-spacing:0.18em;color:var(--stone);position:absolute;top:16px;left:56px;}
+/* ============================================================
+   MODULE 2: DESIGN GRAMMAR
+   ============================================================ */
+.data-layer {
+  background: var(--white);
+  border: 1px solid rgba(27,79,114,0.12);
+  border-radius: 4px 4px 0 0;
+  padding: 44px 52px 36px;
+  position: relative;
+  margin-top: 40px;
+}
+.data-layer::before {
+  content: 'THE DATA';
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--stone);
+  position: absolute;
+  top: 14px;
+  left: 52px;
+}
+.takeaway-layer {
+  background: var(--ink);
+  color: var(--white);
+  border-radius: 0 0 4px 4px;
+  padding: 28px 52px 32px;
+  position: relative;
+}
+.takeaway-layer::before {
+  content: 'THE TAKEAWAY';
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--stone);
+  position: absolute;
+  top: 14px;
+  left: 52px;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  padding: 4px 12px;
+  border-radius: 2px;
+  font-weight: 500;
+}
+.chip-u   { background: var(--u-wash);  color: var(--u-dark);  border: 1px solid var(--u-light); }
+.chip-l   { background: var(--l-wash);  color: var(--l-dark);  border: 1px solid var(--l-light); }
+.chip-d   { background: var(--d-wash);  color: var(--d-dark);  border: 1px solid var(--d-light); }
+.chip-pug { background: var(--pug-wash); color: var(--pug);    border: 1px solid #e8c96a; }
+.chip-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.chip-u .chip-dot { background: var(--u-dark); }
+.chip-l .chip-dot { background: var(--l-dark); }
+.chip-d .chip-dot { background: var(--d-dark); }
+.sec-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--stone);
+  margin-bottom: 12px;
+  display: block;
+}
+.sec-title {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 3.5vw, 40px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin-bottom: 18px;
+}
+.sec-title em { font-style: italic; }
+.body-text { font-family: var(--font-body); font-size: 16px; line-height: 1.75; color: var(--ink-mid); max-width: 600px; }
+.body-text--light { color: rgba(255,255,255,0.72); }
+.mono-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; }
+.big-num { font-family: var(--font-display); font-weight: 900; line-height: 1; letter-spacing: -0.03em; }
+.divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(27,79,114,0.18), transparent); margin: 36px 0; }
+.divider--light { background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent); }
+.divider--sm { margin: 20px 0; }
+.method-note {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 3px;
+  padding: 14px 18px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.6;
+  margin-top: 18px;
+}
+.method-note--light {
+  background: rgba(27,79,114,0.04);
+  border: 1px solid rgba(27,79,114,0.1);
+  color: var(--stone);
+}
 
-/* Panels */
-.panel{padding:96px 0;border-bottom:1px solid rgba(27,79,114,0.08);}
-.panel--dark{background:var(--ink);color:var(--white);}
-.panel--verdict{background:var(--canal-blue);color:var(--white);}
-.panel--sources{background:var(--parchment);}
+/* ============================================================
+   MODULE 3: INTRO PANEL
+   ============================================================ */
+.panel { padding: 88px 0; border-bottom: 1px solid rgba(27,79,114,0.07); }
+.panel--dark { background: var(--ink); color: var(--white); }
+.panel--intro {
+  background: var(--ink);
+  color: var(--white);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
 
-/* Typography */
-.display-title{font-family:var(--font-display);font-size:clamp(42px,6vw,72px);font-weight:900;line-height:1.05;letter-spacing:-0.02em;}
-.section-label{font-family:var(--font-mono);font-size:10px;font-weight:500;letter-spacing:0.22em;text-transform:uppercase;color:var(--stone);margin-bottom:12px;display:block;}
-.section-label--utrecht{color:var(--canal-blue-mid);}
-.section-label--leiden{color:var(--brick-orange-mid);}
-.section-title{font-family:var(--font-display);font-size:clamp(26px,4vw,40px);font-weight:700;line-height:1.15;letter-spacing:-0.01em;margin-bottom:20px;}
-.body-text{font-family:var(--font-body);font-size:17px;line-height:1.75;color:var(--ink-mid);max-width:620px;}
-.body-text--light{color:rgba(255,255,255,0.72);}
-.big-number{font-family:var(--font-display);font-size:clamp(48px,7vw,80px);font-weight:900;line-height:1;letter-spacing:-0.03em;}
-.big-number--utrecht{color:var(--canal-blue);}
-.big-number--leiden{color:var(--brick-orange);}
-.takeaway-stat{font-family:var(--font-display);font-size:clamp(28px,4vw,42px);font-weight:700;line-height:1.2;}
-.mono-label{font-family:var(--font-mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;}
-
-/* Chips */
-.chip{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;font-weight:500;letter-spacing:0.12em;padding:4px 12px;border-radius:2px;}
-.chip--utrecht{background:var(--canal-blue-wash);color:var(--canal-blue);border:1px solid var(--canal-blue-light);}
-.chip--leiden{background:var(--brick-orange-wash);color:var(--brick-orange);border:1px solid var(--brick-orange-light);}
-.chip-dot{width:8px;height:8px;border-radius:50%;}
-.chip--utrecht .chip-dot{background:var(--canal-blue);}
-.chip--leiden .chip-dot{background:var(--brick-orange);}
-
-/* Divider */
-.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(27,79,114,0.15),transparent);margin:40px 0;}
-.divider--light{background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);}
+/* Display headline */
+.display-title {
+  font-family: var(--font-display);
+  font-size: clamp(44px, 6.5vw, 76px);
+  font-weight: 900;
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  margin-bottom: 24px;
+}
+.display-title em { font-style: italic; }
 
 /* Filter badges */
-.filter-badge{display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:3px;padding:10px 16px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.08em;color:rgba(255,255,255,0.8);}
+.filter-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 32px 0;
+}
+.filter-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.11);
+  border-radius: 3px;
+  padding: 8px 14px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  color: rgba(255,255,255,0.78);
+  white-space: nowrap;
+}
+.filter-badge--pug {
+  border-color: rgba(212,168,67,0.35);
+  background: rgba(212,168,67,0.08);
+  color: var(--pug);
+}
 
-/* Dot plot */
-.dot-plot{display:flex;gap:3px;flex-wrap:wrap;align-items:flex-end;}
-.dp-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;transition:transform 0.2s ease;}
-.dp-dot:hover{transform:scale(1.6);}
-.dp-dot--utrecht{background:var(--canal-blue-mid);opacity:0.85;}
-.dp-dot--leiden{background:var(--brick-orange-mid);opacity:0.85;}
-.dp-dot--pug{background:var(--pug-gold);box-shadow:0 0 0 2px rgba(212,168,67,0.3);}
-.dp-dot--house{background:var(--canal-blue);border:1px solid var(--canal-blue);}
-.dp-dot--newbuild{background:var(--brick-orange-light);border:1px solid var(--brick-orange);}
+/* City vs row */
+.city-vs-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 40px;
+}
+.city-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+}
+.city-pill--u { border: 1px solid var(--u-mid); color: var(--u-light); }
+.city-pill--l { border: 1px solid var(--l-mid); color: var(--l-light); }
+.city-pill--d { border: 1px solid var(--d-mid); color: var(--d-light); }
+.city-pill-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.city-pill--u .city-pill-dot { background: var(--u-mid); }
+.city-pill--l .city-pill-dot { background: var(--l-mid); }
+.city-pill--d .city-pill-dot { background: var(--d-mid); }
+.vs-word {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-style: italic;
+  color: var(--stone);
+}
+
+/* Scroll cue */
+.scroll-cue {
+  margin-top: 56px;
+  padding-top: 28px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--stone);
+}
+
+/* Reveal animation */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+/* LIVE MODE: elements start hidden, IntersectionObserver adds .visible to animate them in */
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-d1 { transition-delay: 0.1s; }
+.reveal-d2 { transition-delay: 0.2s; }
+.reveal-d3 { transition-delay: 0.3s; }
+.reveal-d4 { transition-delay: 0.4s; }
+.reveal-d5 { transition-delay: 0.5s; }
+
+/* ============================================================
+   MODULE 4: SUPPLY PANEL
+   Dot plots, bar comparisons, Funda + Pararius counts
+   ============================================================ */
+
+.panel--light { background: var(--white); }
+
+/* Section number watermark */
+.sec-num {
+  font-family: var(--font-display);
+  font-size: 120px;
+  font-weight: 900;
+  color: rgba(27,79,114,0.04);
+  line-height: 1;
+  position: absolute;
+  top: -10px;
+  right: 20px;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Three-column grid */
+.three-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+  margin-top: 24px;
+}
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+/* Dot plot container */
+.dot-plot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-top: 12px;
+}
+.dp-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  cursor: default;
+  transition: transform 0.15s ease;
+}
+.dp-dot:hover { transform: scale(2); }
+
+/* Dot types */
+.dp-apt-u    { background: var(--u-mid);  opacity: 0.85; }
+.dp-apt-l    { background: var(--l-mid);  opacity: 0.85; }
+.dp-apt-d    { background: var(--d-mid);  opacity: 0.85; }
+.dp-house-u  { background: var(--u-dark); }
+.dp-house-l  { background: var(--l-dark); }
+.dp-house-d  { background: var(--d-dark); }
+.dp-pug      { background: var(--pug); box-shadow: 0 0 0 2px rgba(212,168,67,0.3); }
+.dp-temp     { background: #c0392b; opacity: 0.8; }
+
+/* Dot legend row */
+.dot-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 10px;
+}
+.dot-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+.dot-legend-swatch {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
 
 /* Bar chart */
-.bar-wrap{display:flex;flex-direction:column;gap:12px;}
-.bar-row{display:flex;align-items:center;gap:12px;}
-.bar-label{font-family:var(--font-mono);font-size:10px;letter-spacing:0.08em;width:80px;flex-shrink:0;color:var(--ink-light);}
-.bar-track{flex:1;height:18px;background:rgba(0,0,0,0.06);border-radius:2px;overflow:hidden;position:relative;}
-.bar-fill{height:100%;border-radius:2px;transition:width 1.2s cubic-bezier(0.4,0,0.2,1);}
-.bar-fill--utrecht{background:linear-gradient(90deg,var(--canal-blue),var(--canal-blue-mid));}
-.bar-fill--leiden{background:linear-gradient(90deg,var(--brick-orange),var(--brick-orange-mid));}
-.bar-value{font-family:var(--font-mono);font-size:11px;width:48px;flex-shrink:0;color:var(--ink-mid);}
+.bar-wrap { display: flex; flex-direction: column; gap: 9px; margin-top: 16px; }
+.bar-row  { display: flex; align-items: center; gap: 10px; }
+.bar-lbl  {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  width: 80px;
+  flex-shrink: 0;
+  color: var(--ink-light);
+}
+.bar-track {
+  flex: 1;
+  height: 14px;
+  background: rgba(0,0,0,0.05);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  width: 0%;
+  transition: width 1.1s cubic-bezier(0.4,0,0.2,1);
+}
+.bf-u   { background: linear-gradient(90deg, var(--u-dark), var(--u-mid)); }
+.bf-l   { background: linear-gradient(90deg, var(--l-dark), var(--l-mid)); }
+.bf-d   { background: linear-gradient(90deg, var(--d-dark), var(--d-mid)); }
+.bf-pug { background: var(--pug); }
+.bf-temp{ background: #c0392b; }
+.bar-val {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  width: 48px;
+  flex-shrink: 0;
+  color: var(--ink-mid);
+}
 
-/* Price strip */
-.price-strip{display:flex;flex-direction:column;gap:4px;margin:20px 0;}
-.ps-row{display:flex;align-items:center;gap:10px;}
-.ps-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.ps-value{font-family:var(--font-mono);font-size:11px;width:90px;flex-shrink:0;}
-.ps-bar{height:6px;border-radius:3px;position:relative;}
+/* Takeaway big numbers */
+.takeaway-three {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+  margin-top: 20px;
+}
+.tk-num {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.tk-body {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.55;
+}
 
-/* Metric cards */
-.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:32px;}
-.metric-card{background:var(--white);padding:24px 28px;position:relative;}
-.metric-card--dark{background:rgba(255,255,255,0.05);color:var(--white);}
-.metric-num{font-family:var(--font-display);font-size:36px;font-weight:900;line-height:1;letter-spacing:-0.02em;margin-bottom:4px;}
-.metric-desc{font-family:var(--font-body);font-size:13px;color:var(--ink-light);line-height:1.4;}
-.metric-card--dark .metric-desc{color:rgba(255,255,255,0.5);}
+/* ============================================================
+   MODULE 5: PRICE PANEL
+   ============================================================ */
+.panel--parchment { background: var(--parchment); }
 
-/* Neighborhood cards */
-.nbhd-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:32px;}
-.nbhd-card{padding:28px 32px;border-radius:3px;position:relative;}
-.nbhd-card--utrecht{background:var(--canal-blue-wash);border-left:3px solid var(--canal-blue);}
-.nbhd-card--leiden{background:var(--brick-orange-wash);border-left:3px solid var(--brick-orange);}
-.nbhd-name{font-family:var(--font-display);font-size:22px;font-weight:700;margin-bottom:8px;}
-.nbhd-tag{display:inline-block;font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;padding:2px 8px;border-radius:1px;margin-bottom:12px;}
-.nbhd-tag--utrecht{background:var(--canal-blue);color:var(--white);}
-.nbhd-tag--leiden{background:var(--brick-orange);color:var(--white);}
-.nbhd-desc{font-size:14px;color:var(--ink-light);line-height:1.6;}
+/* Price strip track */
+.price-strip-wrap {
+  position: relative;
+  height: 40px;
+  border-radius: 3px;
+  overflow: visible;
+  margin-bottom: 28px;
+}
+.price-strip-track {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  border-radius: 3px;
+}
+.price-strip-label {
+  position: absolute;
+  bottom: -18px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--stone);
+}
+.price-strip-label--left  { left: 0; }
+.price-strip-label--mid   { left: 50%; transform: translateX(-50%); }
+.price-strip-label--right { right: 0; }
 
-/* Verdict */
-.verdict-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin:40px 0;}
-.verdict-item{background:rgba(255,255,255,0.06);padding:28px 24px;border-top:2px solid rgba(255,255,255,0.15);}
-.verdict-icon{font-size:24px;margin-bottom:12px;}
-.verdict-label{font-family:var(--font-mono);font-size:9px;letter-spacing:0.16em;color:rgba(255,255,255,0.45);margin-bottom:6px;}
-.verdict-value{font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--white);line-height:1.2;}
-.verdict-winner{font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;margin-top:6px;}
-.verdict-winner--utrecht{color:var(--canal-blue-light);}
-.verdict-winner--leiden{color:var(--brick-orange-light);}
-.verdict-winner--tie{color:rgba(255,255,255,0.4);}
+/* Price mark — each listing is a vertical mark */
+.price-mark {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 2px;
+  height: 28px;
+  border-radius: 1px;
+  opacity: 0.55;
+}
+
+/* Sweet spot bracket comparison */
+.bracket-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+  margin-top: 24px;
+}
+.bracket-col-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: block;
+}
+
+/* Floor price row in takeaway */
+.floor-row {
+  display: flex;
+  gap: 28px;
+  align-items: baseline;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.floor-num {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 1;
+}
+.floor-city {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: var(--stone);
+  margin-left: 4px;
+}
+
+/* Takeaway two-col */
+.takeaway-two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-top: 20px;
+}
+.takeaway-three {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+  margin-top: 20px;
+}
+
+/* ============================================================
+   MODULE 6: PUG FACTOR PANEL
+   ============================================================ */
+.panel--charcoal {
+  background: #111518;
+  color: var(--white);
+}
+
+/* Pug header row */
+.pug-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+/* Pug count display */
+.pug-count {
+  font-family: var(--font-display);
+  font-size: clamp(44px, 6vw, 64px);
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.pug-sublabel {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--stone);
+}
+
+/* Pug dot array */
+.pug-dot-array {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 14px;
+}
+.pug-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.pug-dot--active {
+  background: var(--pug);
+  box-shadow: 0 0 0 2px rgba(212,168,67,0.3);
+}
+.pug-dot--inactive-u { background: rgba(46,134,171,0.2); }
+.pug-dot--inactive-l { background: rgba(230,126,82,0.2); }
+.pug-dot--inactive-d { background: rgba(82,183,136,0.2); }
+
+/* Three insight cards inside data layer */
+.insight-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin-top: 24px;
+}
+.insight-card {
+  padding: 18px 20px;
+  border-radius: 2px;
+}
+.insight-card--u {
+  background: rgba(27,79,114,0.18);
+  border-left: 2px solid var(--u-mid);
+}
+.insight-card--l {
+  background: rgba(192,73,43,0.14);
+  border-left: 2px solid var(--l-mid);
+}
+.insight-card--d {
+  background: rgba(45,106,79,0.18);
+  border-left: 2px solid var(--d-mid);
+}
+.insight-card-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  display: block;
+  margin-bottom: 7px;
+}
+.insight-card-body {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: rgba(255,255,255,0.62);
+  line-height: 1.55;
+}
+
+/* Pug takeaway */
+.pug-takeaway {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  margin-top: 18px;
+}
+.pug-icons-row {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+.pug-takeaway-text {
+  font-family: var(--font-display);
+  font-size: clamp(17px, 2.2vw, 22px);
+  font-weight: 700;
+  color: var(--pug);
+  line-height: 1.35;
+  margin-bottom: 10px;
+}
+.pug-takeaway-sub {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.6;
+}
+
+/* Dark data layer variant */
+.data-layer--dark {
+  background: #1a1e22;
+  border-color: rgba(212,168,67,0.14);
+}
+.data-layer--dark::before {
+  color: var(--stone);
+}
+
+/* Pug takeaway layer variant */
+.takeaway-layer--pug {
+  background: rgba(212,168,67,0.1);
+  border: 1px solid rgba(212,168,67,0.2);
+  border-top: none;
+}
+
+/* ============================================================
+   MODULE 7: CITY METRICS PANEL
+   ============================================================ */
+.panel--u-wash { background: var(--u-wash); }
+
+/* 3x3 metrics grid */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2px;
+  margin-top: 12px;
+}
+.metric-card {
+  background: var(--white);
+  padding: 22px 24px;
+  position: relative;
+}
+.metric-card-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--stone);
+  display: block;
+  margin-bottom: 14px;
+}
+.metric-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.metric-num {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.metric-city-tag {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  color: var(--stone);
+}
+.metric-desc {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--ink-light);
+  line-height: 1.5;
+  margin-top: 8px;
+}
+.metric-card--border-u { border-top: 3px solid var(--u-dark); }
+.metric-card--border-um { border-top: 3px solid var(--u-mid); }
+.metric-card--border-ul { border-top: 3px solid var(--u-light); }
+.metric-card--border-pug { border-top: 3px solid var(--pug); }
+
+/* Winner tags */
+.metric-winner {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  padding: 2px 6px;
+  border-radius: 1px;
+  margin-top: 6px;
+}
+.mw-u   { background: var(--u-wash);   color: var(--u-dark); }
+.mw-l   { background: var(--l-wash);   color: var(--l-dark); }
+.mw-d   { background: var(--d-wash);   color: var(--d-dark); }
+.mw-tie { background: #f0f0ec; color: var(--stone); }
+
+/* Metrics takeaway three-col (reuses .takeaway-three) */
+.tk-num {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 5vw, 52px);
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.tk-body {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.55;
+}
+
+/* ============================================================
+   MODULE 8: NEIGHBORHOODS PANEL
+   ============================================================ */
+.panel--white { background: var(--white); }
+
+/* 2x3 neighborhood card grid */
+.nbhd-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+.nbhd-card {
+  padding: 24px 28px;
+  border-radius: 3px;
+  position: relative;
+}
+.nbhd-card--u { background: var(--u-wash);  border-left: 3px solid var(--u-dark); }
+.nbhd-card--l { background: var(--l-wash);  border-left: 3px solid var(--l-dark); }
+.nbhd-card--d { background: var(--d-wash);  border-left: 3px solid var(--d-dark); }
+
+.nbhd-rank {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 1px;
+  color: var(--white);
+  display: inline-block;
+  margin-bottom: 10px;
+}
+.nbhd-rank--u { background: var(--u-dark); }
+.nbhd-rank--l { background: var(--l-dark); }
+.nbhd-rank--d { background: var(--d-dark); }
+
+.nbhd-name {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 10px;
+}
+.nbhd-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 12px;
+}
+.nbhd-tag {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  padding: 2px 7px;
+  border-radius: 1px;
+}
+.nt-u     { background: var(--u-wash);   color: var(--u-dark); }
+.nt-l     { background: var(--l-wash);   color: var(--l-dark); }
+.nt-d     { background: var(--d-wash);   color: var(--d-dark); }
+.nt-pug   { background: var(--pug-wash); color: #9a7a20; }
+.nt-warn  { background: #fff0ee;         color: var(--l-dark); }
+.nt-good  { background: #eafaf1;         color: var(--d-dark); }
+
+.nbhd-desc {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--ink-light);
+  line-height: 1.65;
+}
+
+/* Canal callout strip */
+.canal-strip {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+.canal-box {
+  background: var(--u-wash);
+  padding: 20px 24px;
+  border-radius: 3px;
+}
+.canal-box--d { background: var(--d-wash); }
+.canal-box-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: block;
+}
+.canal-box-body {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--ink-mid);
+  line-height: 1.6;
+}
+
+/* Neighborhood takeaway */
+.nbhd-takeaway-text {
+  font-family: var(--font-display);
+  font-size: clamp(17px, 2.2vw, 22px);
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.4;
+  max-width: 700px;
+  margin-bottom: 12px;
+  margin-top: 18px;
+}
+.nbhd-takeaway-sub {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.65;
+  max-width: 640px;
+}
+
+/* ============================================================
+   MODULE 9: VERDICT PANEL
+   ============================================================ */
+.panel--verdict {
+  background: var(--u-dark);
+  color: var(--white);
+}
+
+/* Scorecard grid */
+.scorecard {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2px;
+  margin: 32px 0;
+}
+.scorecard-item {
+  background: rgba(255,255,255,0.06);
+  padding: 20px 18px;
+  border-top: 2px solid rgba(255,255,255,0.1);
+}
+.scorecard-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: rgba(255,255,255,0.4);
+  display: block;
+  margin-bottom: 5px;
+}
+.scorecard-value {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.2;
+  margin-bottom: 5px;
+}
+.scorecard-winner {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  display: block;
+}
+.sw-u    { color: var(--u-light); }
+.sw-l    { color: var(--l-light); }
+.sw-d    { color: var(--d-light); }
+.sw-tie  { color: rgba(255,255,255,0.3); }
+.sw-warn { color: #f5a623; }
+
+/* Verdict closing statement */
+.verdict-statement {
+  background: rgba(255,255,255,0.07);
+  border-radius: 3px;
+  border-left: 4px solid rgba(255,255,255,0.25);
+  padding: 36px 40px;
+  margin-top: 40px;
+}
+.verdict-headline {
+  font-family: var(--font-display);
+  font-size: clamp(18px, 2.5vw, 26px);
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.45;
+  margin-bottom: 16px;
+}
+.verdict-body {
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: rgba(255,255,255,0.52);
+  line-height: 1.75;
+  max-width: 680px;
+}
+.verdict-pugs {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+.verdict-pug-sign {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-style: italic;
+  color: rgba(255,255,255,0.3);
+}
+
+/* Score tally row above scorecard */
+.tally-row {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.tally-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tally-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.tally-count {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1;
+}
+.tally-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.45);
+  margin-top: 2px;
+}
+
+/* ============================================================
+   MODULE 10: SOURCES PANEL
+   ============================================================ */
+.panel--sources { background: var(--parchment); }
 
 /* Sources table */
-.sources-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:24px;}
-.sources-table th{font-family:var(--font-mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--stone);padding:8px 12px;text-align:left;border-bottom:1px solid rgba(27,79,114,0.12);}
-.sources-table td{padding:10px 12px;border-bottom:1px solid rgba(27,79,114,0.06);font-size:13px;color:var(--ink-mid);vertical-align:top;}
-.sources-table tr:last-child td{border-bottom:none;}
-.src-city{font-family:var(--font-mono);font-size:10px;padding:2px 6px;border-radius:1px;}
-.src-city--u{background:var(--canal-blue-wash);color:var(--canal-blue);}
-.src-city--l{background:var(--brick-orange-wash);color:var(--brick-orange);}
-.src-city--both{background:#f0f0ec;color:var(--stone);}
-
-/* Progress + nav */
-#progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--canal-blue),var(--brick-orange));width:0%;z-index:1000;transition:width 0.1s linear;}
-#nav-dots{position:fixed;right:20px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:999;}
-.nav-dot{width:7px;height:7px;border-radius:50%;background:var(--stone);opacity:0.35;cursor:pointer;transition:all 0.3s ease;border:none;padding:0;}
-.nav-dot.active{opacity:1;background:var(--canal-blue);transform:scale(1.5);}
-
-/* Animations */
-.reveal{opacity:0;transform:translateY(18px);transition:opacity 0.7s ease,transform 0.7s ease;}
-.reveal.visible{opacity:1;transform:translateY(0);}
-.reveal-delay-1{transition-delay:0.1s;}
-.reveal-delay-2{transition-delay:0.2s;}
-.reveal-delay-3{transition-delay:0.3s;}
-
-/* Two col layout */
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;}
-.two-col--wide{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;}
-
-/* Section number */
-.section-num{font-family:var(--font-display);font-size:120px;font-weight:900;color:rgba(27,79,114,0.06);line-height:1;position:absolute;top:-20px;right:32px;pointer-events:none;}
-
-@media(max-width:680px){
-  .two-col,.two-col--wide,.metric-grid,.nbhd-grid,.verdict-grid{grid-template-columns:1fr;}
-  .data-layer,.takeaway-layer{padding:32px 24px 24px;}
-  .data-layer::before,.takeaway-layer::before{left:24px;}
-  #nav-dots{display:none;}
-  .section-num{font-size:72px;}
+.src-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin-top: 20px;
 }
+.src-table th {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--stone);
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid rgba(27,79,114,0.12);
+}
+.src-table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid rgba(27,79,114,0.05);
+  color: var(--ink-mid);
+  vertical-align: top;
+  line-height: 1.5;
+}
+.src-table tr:last-child td { border-bottom: none; }
+.src-table tr:hover td { background: rgba(27,79,114,0.02); }
+
+/* City tags in table */
+.src-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  padding: 1px 6px;
+  border-radius: 1px;
+}
+.src-tag--u   { background: var(--u-wash);  color: var(--u-dark); }
+.src-tag--l   { background: var(--l-wash);  color: var(--l-dark); }
+.src-tag--d   { background: var(--d-wash);  color: var(--d-dark); }
+.src-tag--all { background: #f0f0ec; color: var(--stone); }
+
+/* Strong values in table */
+.src-val-u { color: var(--u-dark); font-weight: 600; }
+.src-val-l { color: var(--l-dark); font-weight: 600; }
+.src-val-d { color: var(--d-dark); font-weight: 600; }
+
+/* Resources grid */
+.resources-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 12px;
+}
+.resource-link {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--u-dark);
+  text-decoration: none;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(27,79,114,0.08);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.resource-link:hover { color: var(--u-mid); }
+.resource-link--l { color: var(--l-dark); }
+.resource-link--l:hover { color: var(--l-mid); }
+.resource-link--d { color: var(--d-dark); }
+.resource-link--d:hover { color: var(--d-mid); }
+
+/* Methodology box */
+.methodology-box {
+  background: var(--white);
+  border: 1px solid rgba(27,79,114,0.1);
+  border-radius: 3px;
+  padding: 24px 28px;
+  margin-top: 24px;
+}
+.methodology-box h3 {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--stone);
+  margin-bottom: 14px;
+}
+.methodology-box p {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--ink-light);
+  line-height: 1.7;
+  margin-bottom: 10px;
+}
+.methodology-box p:last-child { margin-bottom: 0; }
+
+/* Footer line */
+.sources-footer {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(27,79,114,0.08);
+  text-align: center;
+}
+.sources-footer-cities {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 10px;
+}
+.sfc-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--stone);
+}
+.sfc-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   MODULE 11: NAVIGATION & POLISH
+   ============================================================ */
+
+/* Progress bar */
+#progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--u-mid), var(--l-mid), var(--d-mid));
+  z-index: 1000;
+  transition: width 0.1s linear;
+  pointer-events: none;
+}
+
+/* Nav dots */
+#nav-dots {
+  position: fixed;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 999;
+}
+.nav-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--stone);
+  opacity: 0.3;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease, background 0.3s ease;
+}
+.nav-dot:hover {
+  opacity: 0.6;
+  transform: scale(1.3);
+}
+.nav-dot.active {
+  opacity: 1;
+  transform: scale(1.5);
+  background: var(--u-mid);
+}
+.nav-dot[data-section="1"].active { background: var(--u-mid); }
+.nav-dot[data-section="2"].active { background: var(--l-mid); }
+.nav-dot[data-section="3"].active { background: var(--pug); }
+.nav-dot[data-section="4"].active { background: var(--u-mid); }
+.nav-dot[data-section="5"].active { background: var(--u-mid); }
+.nav-dot[data-section="6"].active { background: var(--u-dark); }
+.nav-dot[data-section="7"].active { background: var(--stone); }
+
+/* Nav dot tooltips */
+.nav-dot::after {
+  content: attr(data-label);
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--ink);
+  color: var(--white);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  padding: 3px 8px;
+  border-radius: 2px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.nav-dot:hover::after {
+  opacity: 1;
+}
+
+/* Smooth section transitions */
+.panel {
+  padding: 88px 0;
+  border-bottom: 1px solid rgba(27,79,114,0.07);
+}
+
+/* Responsive — hide nav dots on small screens */
+@media (max-width: 720px) {
+  #nav-dots { display: none; }
+  .data-layer { padding: 36px 24px 28px; }
+  .data-layer::before { left: 24px; }
+  .takeaway-layer { padding: 24px 24px 28px; }
+  .takeaway-layer::before { left: 24px; }
+  .three-col { grid-template-columns: 1fr; }
+  .two-col { grid-template-columns: 1fr; }
+  .metrics-grid { grid-template-columns: 1fr; }
+  .nbhd-grid { grid-template-columns: 1fr; }
+  .scorecard { grid-template-columns: 1fr 1fr; }
+  .bracket-grid { grid-template-columns: 1fr; }
+  .canal-strip { grid-template-columns: 1fr; }
+  .resources-grid { grid-template-columns: 1fr; }
+  .takeaway-three { grid-template-columns: 1fr; }
+  .takeaway-two { grid-template-columns: 1fr; }
+  .insight-cards { grid-template-columns: 1fr; }
+  .tally-row { gap: 16px; }
+  .sec-num { font-size: 72px; }
+  .verdict-statement { padding: 24px 24px; }
+}
+
+@media (max-width: 480px) {
+  .scorecard { grid-template-columns: 1fr; }
+  .filter-grid { gap: 6px; }
+  .city-vs-row { gap: 10px; }
+}
+
 </style>
 </head>
 <body>
-
+<!-- ============================================================
+     MODULE 11: PROGRESS BAR + NAV DOTS
+     ============================================================ -->
 <div id="progress-bar"></div>
-<nav id="nav-dots">
-  <button class="nav-dot active" data-section="0" title="Intro"></button>
-  <button class="nav-dot" data-section="1" title="Supply"></button>
-  <button class="nav-dot" data-section="2" title="Price"></button>
-  <button class="nav-dot" data-section="3" title="Pug Factor"></button>
-  <button class="nav-dot" data-section="4" title="City Metrics"></button>
-  <button class="nav-dot" data-section="5" title="Neighborhoods"></button>
-  <button class="nav-dot" data-section="6" title="Verdict"></button>
-  <button class="nav-dot" data-section="7" title="Sources"></button>
+
+<nav id="nav-dots" aria-label="Section navigation">
+  <button class="nav-dot active" data-section="0" data-label="Intro"></button>
+  <button class="nav-dot" data-section="1" data-label="Supply"></button>
+  <button class="nav-dot" data-section="2" data-label="Price"></button>
+  <button class="nav-dot" data-section="3" data-label="Pug Factor"></button>
+  <button class="nav-dot" data-section="4" data-label="City Metrics"></button>
+  <button class="nav-dot" data-section="5" data-label="Neighborhoods"></button>
+  <button class="nav-dot" data-section="6" data-label="Verdict"></button>
+  <button class="nav-dot" data-section="7" data-label="Sources"></button>
 </nav>
 
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+
+<!-- SVG DEFS -->
+<svg width="0" height="0" style="position:absolute;overflow:hidden;" aria-hidden="true">
   <defs>
-    <symbol id="pug-icon" viewBox="0 0 48 48">
-      <ellipse cx="24" cy="30" rx="14" ry="10" fill="currentColor"/>
+    <symbol id="pug" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="31" rx="14" ry="10" fill="currentColor"/>
       <ellipse cx="24" cy="16" rx="11" ry="10" fill="currentColor"/>
-      <ellipse cx="24" cy="20" rx="7" ry="5" fill="currentColor" opacity="0.8"/>
-      <ellipse cx="14" cy="10" rx="5" ry="4" fill="currentColor"/>
-      <ellipse cx="34" cy="10" rx="5" ry="4" fill="currentColor"/>
-      <circle cx="19.5" cy="14" r="2.2" fill="white" opacity="0.9"/>
-      <circle cx="28.5" cy="14" r="2.2" fill="white" opacity="0.9"/>
-      <circle cx="19.5" cy="14.5" r="1.1" fill="currentColor" opacity="0.35"/>
-      <circle cx="28.5" cy="14.5" r="1.1" fill="currentColor" opacity="0.35"/>
-      <ellipse cx="24" cy="19.5" rx="3" ry="1.8" fill="white" opacity="0.45"/>
-      <path d="M38 28 Q44 22 40 18 Q36 14 38 20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-      <rect x="13" y="37" width="5" height="7" rx="2.5" fill="currentColor"/>
-      <rect x="20" y="38" width="5" height="6" rx="2.5" fill="currentColor"/>
-      <rect x="27" y="38" width="5" height="6" rx="2.5" fill="currentColor"/>
-      <rect x="34" y="37" width="5" height="7" rx="2.5" fill="currentColor"/>
+      <ellipse cx="24" cy="20" rx="7" ry="5" fill="currentColor" opacity="0.75"/>
+      <ellipse cx="14" cy="9"  rx="5" ry="4" fill="currentColor"/>
+      <ellipse cx="34" cy="9"  rx="5" ry="4" fill="currentColor"/>
+      <circle cx="19.5" cy="14" r="2.4" fill="white" opacity="0.9"/>
+      <circle cx="28.5" cy="14" r="2.4" fill="white" opacity="0.9"/>
+      <circle cx="19.5" cy="14.6" r="1.1" fill="currentColor" opacity="0.4"/>
+      <circle cx="28.5" cy="14.6" r="1.1" fill="currentColor" opacity="0.4"/>
+      <ellipse cx="24" cy="19.5" rx="3.2" ry="2" fill="white" opacity="0.45"/>
+      <path d="M38 29 Q45 22 41 17 Q37 13 39 20" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/>
+      <rect x="13" y="38" width="5" height="7" rx="2.5" fill="currentColor"/>
+      <rect x="20" y="39" width="5" height="6" rx="2.5" fill="currentColor"/>
+      <rect x="27" y="39" width="5" height="6" rx="2.5" fill="currentColor"/>
+      <rect x="34" y="38" width="5" height="7" rx="2.5" fill="currentColor"/>
     </symbol>
+    <symbol id="dot-u"   viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#2E86AB"/></symbol>
+    <symbol id="dot-l"   viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#E67E52"/></symbol>
+    <symbol id="dot-d"   viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#52B788"/></symbol>
+    <symbol id="dot-pug" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#D4A843"/></symbol>
   </defs>
 </svg>
 
-<main>
+<!-- ============================================================
+     MODULE 3: INTRO PANEL
+     ============================================================ -->
+<section class="panel panel--intro" id="section-intro" data-section="0">
+  <div class="wrap">
+    <div style="padding: 80px 0;">
 
-<!-- ===================== MODULE 2: INTRO ===================== -->
-<section class="panel panel--dark" id="section-0" data-section="0" style="min-height:100vh;display:flex;align-items:center;padding:80px 0;">
-  <div class="container">
-    <div class="reveal"><span class="section-label" style="color:var(--stone);">A Housing Decision Research Report · May 2026</span></div>
-    <h1 class="display-title reveal" style="color:var(--white);margin-bottom:24px;">
-      Two Cities.<br>
-      <em style="color:var(--canal-blue-mid);">One</em>
-      <span style="color:var(--brick-orange-mid);"> Decision.</span>
-    </h1>
-    <div class="divider divider--light reveal"></div>
-    <p class="body-text body-text--light reveal" style="margin-bottom:16px;">
-      Ten days on the ground across the Netherlands. Amsterdam, Rotterdam, The Hague, Haarlem, Utrecht, Leiden. Every city got a fair shot — walked the neighborhoods at different hours, tested the transit, tracked down the canal streets, looked at the actual housing stock.
-    </p>
-    <p class="body-text body-text--light reveal" style="margin-bottom:40px;">
-      The bar is genuinely high everywhere. This is not a country with bad options. What it comes down to isn't quality — it's fit. Two cities survived every filter. This is what the data shows about what separates them.
-    </p>
-    <div class="reveal" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:48px;">
-      <div class="filter-badge">🏘 Rental availability &amp; supply</div>
-      <div class="filter-badge">€ Price &amp; value range</div>
-      <div class="filter-badge" style="border-color:rgba(212,168,67,0.4);">
-        <svg width="16" height="16" style="color:var(--pug-gold)"><use href="#pug-icon" width="16" height="16" color="#D4A843"/></svg>
-        The pug factor
+      <div class="reveal">
+        <span class="sec-label" style="color:var(--stone);">
+          Housing Decision Research &nbsp;·&nbsp; Three Cities &nbsp;·&nbsp; May 2026
+        </span>
       </div>
-      <div class="filter-badge">📍 Canal &amp; character neighborhoods</div>
-      <div class="filter-badge">🏢 Business infrastructure</div>
-      <div class="filter-badge">🚆 Transit &amp; connectivity</div>
-      <div class="filter-badge">🌿 Green space &amp; dog walks</div>
-      <div class="filter-badge">🌍 Expat ecosystem</div>
-      <div class="filter-badge">🏥 Healthcare proximity</div>
-    </div>
-    <div class="reveal" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
-      <div style="display:flex;align-items:center;gap:10px;padding:12px 20px;border:1px solid var(--canal-blue-mid);border-radius:3px;">
-        <div style="width:10px;height:10px;border-radius:50%;background:var(--canal-blue-mid);"></div>
-        <span style="font-family:var(--font-mono);font-size:11px;letter-spacing:0.12em;color:var(--canal-blue-light);">UTRECHT</span>
+
+      <h1 class="display-title reveal reveal-d1">
+        Three Cities.<br>
+        <em style="color:var(--u-mid);">One</em>
+        <span style="color:var(--l-mid);"> Decision.</span>
+      </h1>
+
+      <div class="divider divider--light reveal reveal-d2"></div>
+
+      <p class="body-text body-text--light reveal reveal-d2" style="margin-bottom:14px;">
+        Ten days on the ground across the Netherlands. Amsterdam, Rotterdam, The Hague, Haarlem, Utrecht, Leiden, Delft. Every city got a fair shot — walked the neighborhoods at different hours, tested the transit, tracked down the canal streets, looked at the actual housing stock.
+      </p>
+      <p class="body-text body-text--light reveal reveal-d3">
+        The bar is genuinely high everywhere. This is not a country with bad options. What it comes down to isn't quality — it's fit. Three cities survived every filter. This is what the data says about what separates them.
+      </p>
+
+      <!-- Filter badges -->
+      <div class="filter-grid reveal reveal-d3">
+        <div class="filter-badge">&#x1F3D8; Rental supply &amp; availability</div>
+        <div class="filter-badge">&#x20AC; Price &amp; value range</div>
+        <div class="filter-badge filter-badge--pug">
+          <svg width="14" height="14"><use href="#pug" width="14" height="14" color="#D4A843"/></svg>
+          The pug factor
+        </div>
+        <div class="filter-badge">&#x1F4CD; Canal &amp; character neighborhoods</div>
+        <div class="filter-badge">&#x1F3E2; Business infrastructure</div>
+        <div class="filter-badge">&#x1F686; Transit &amp; connectivity</div>
+        <div class="filter-badge">&#x1F33F; Green space &amp; dog walks</div>
+        <div class="filter-badge">&#x1F30D; Expat ecosystem</div>
+        <div class="filter-badge">&#x1F3E5; Healthcare proximity</div>
       </div>
-      <span style="font-family:var(--font-display);font-size:22px;color:var(--stone);font-style:italic;">vs</span>
-      <div style="display:flex;align-items:center;gap:10px;padding:12px 20px;border:1px solid var(--brick-orange-mid);border-radius:3px;">
-        <div style="width:10px;height:10px;border-radius:50%;background:var(--brick-orange-mid);"></div>
-        <span style="font-family:var(--font-mono);font-size:11px;letter-spacing:0.12em;color:var(--brick-orange-light);">LEIDEN</span>
+
+      <!-- City vs city vs city -->
+      <div class="city-vs-row reveal reveal-d4">
+        <div class="city-pill city-pill--u">
+          <div class="city-pill-dot"></div>
+          UTRECHT
+        </div>
+        <span class="vs-word">vs</span>
+        <div class="city-pill city-pill--l">
+          <div class="city-pill-dot"></div>
+          LEIDEN
+        </div>
+        <span class="vs-word">vs</span>
+        <div class="city-pill city-pill--d">
+          <div class="city-pill-dot"></div>
+          DELFT
+        </div>
       </div>
-    </div>
-    <div class="reveal" style="margin-top:64px;padding-top:32px;border-top:1px solid rgba(255,255,255,0.07);">
-      <span style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.18em;color:var(--stone);">SCROLL TO EXPLORE ↓</span>
+
+      <div class="scroll-cue reveal reveal-d5">
+        SCROLL TO EXPLORE &#x2193;
+      </div>
+
     </div>
   </div>
 </section>
 
-<!-- ===================== MODULE 3: SUPPLY ===================== -->
-<section class="panel" id="section-1" data-section="1" style="background:var(--white);">
-  <div class="container--wide" style="position:relative;">
-    <div class="section-num">01</div>
-    <div class="reveal"><span class="section-label">Supply &amp; Availability</span></div>
-    <h2 class="section-title reveal">Utrecht has more to offer.<br><em>By a meaningful margin.</em></h2>
-    <p class="body-text reveal" style="margin-bottom:0;">Active Funda listings for 2+ bedroom rentals, scraped May 2026. Each dot is one listing.</p>
+<script>
+// Reveal on scroll — used by all panels
+var revealObserver = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.08 });
+
+document.querySelectorAll('.reveal').forEach(function(el) {
+  revealObserver.observe(el);
+});
+</script>
+
+
+<!-- ============================================================
+     MODULE 4: SUPPLY PANEL
+     ============================================================ -->
+<section class="panel panel--light" id="section-supply" data-section="1" style="position:relative;">
+  <div class="wrap--wide">
+    <div class="sec-num">01</div>
+    <span class="sec-label">Supply &amp; Availability</span>
+    <h2 class="sec-title reveal">Utrecht dominates.<br><em>Delft is a waiting game.</em></h2>
+    <p class="body-text reveal">Every active 2+ bedroom rental listing across Funda and Pararius, scraped May 2, 2026. Each dot is one listing. Hover to see type.</p>
 
     <div class="data-layer reveal">
-      <div class="two-col" style="gap:48px;margin-top:16px;">
-        <!-- Utrecht dots -->
+
+      <!-- Dot plots — three cities -->
+      <div class="three-col">
+
+        <!-- Utrecht -->
         <div>
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-            <div class="chip chip--utrecht"><div class="chip-dot"></div>UTRECHT</div>
-            <span style="font-family:var(--font-mono);font-size:11px;color:var(--stone);">147 total listings</span>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+            <div class="chip chip-u"><div class="chip-dot"></div>UTRECHT</div>
+            <span class="mono-label" style="color:var(--stone);font-size:9px;">147 Funda &nbsp;+&nbsp; 77 Pararius</span>
           </div>
-          <div class="dot-plot" id="dots-utrecht"></div>
-          <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:12px;">
-            <span style="font-family:var(--font-mono);font-size:10px;color:var(--canal-blue);"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--canal-blue-mid);margin-right:5px;"></span>Apartment</span>
-            <span style="font-family:var(--font-mono);font-size:10px;color:var(--canal-blue);"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--canal-blue);margin-right:5px;"></span>House/standalone</span>
-            <span style="font-family:var(--font-mono);font-size:10px;color:var(--pug-gold);"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--pug-gold);margin-right:5px;"></span>Pet-friendly mention</span>
+          <div class="dot-plot" id="dp-utrecht"></div>
+          <div class="dot-legend">
+            <div class="dot-legend-item">
+              <div class="dot-legend-swatch" style="background:var(--u-mid);"></div>
+              <span style="color:var(--u-mid);">Apartment</span>
+            </div>
+            <div class="dot-legend-item">
+              <div class="dot-legend-swatch" style="background:var(--u-dark);"></div>
+              <span style="color:var(--u-dark);">House</span>
+            </div>
+            <div class="dot-legend-item">
+              <div class="dot-legend-swatch" style="background:var(--pug);box-shadow:0 0 0 2px rgba(212,168,67,0.3);"></div>
+              <span style="color:var(--pug);">Pet-friendly</span>
+            </div>
           </div>
         </div>
-        <!-- Leiden dots -->
+
+        <!-- Leiden -->
         <div>
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-            <div class="chip chip--leiden"><div class="chip-dot"></div>LEIDEN</div>
-            <span style="font-family:var(--font-mono);font-size:11px;color:var(--stone);">117 total listings</span>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+            <div class="chip chip-l"><div class="chip-dot"></div>LEIDEN</div>
+            <span class="mono-label" style="color:var(--stone);font-size:9px;">117 Funda &nbsp;+&nbsp; 46 Pararius</span>
           </div>
-          <div class="dot-plot" id="dots-leiden"></div>
-          <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:12px;">
-            <span style="font-family:var(--font-mono);font-size:10px;color:var(--brick-orange);"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--brick-orange-mid);margin-right:5px;"></span>Apartment</span>
-            <span style="font-family:var(--font-mono);font-size:10px;color:var(--brick-orange);"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--brick-orange);margin-right:5px;"></span>House/standalone</span>
-            <span style="font-family:var(--font-mono);font-size:10px;color:var(--pug-gold);"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--pug-gold);margin-right:5px;"></span>Pet-friendly mention</span>
+          <div class="dot-plot" id="dp-leiden"></div>
+          <div class="dot-legend">
+            <div class="dot-legend-item">
+              <div class="dot-legend-swatch" style="background:var(--l-mid);"></div>
+              <span style="color:var(--l-mid);">Apartment</span>
+            </div>
+            <div class="dot-legend-item">
+              <div class="dot-legend-swatch" style="background:var(--l-dark);"></div>
+              <span style="color:var(--l-dark);">House</span>
+            </div>
+            <div class="dot-legend-item">
+              <div class="dot-legend-swatch" style="background:var(--pug);box-shadow:0 0 0 2px rgba(212,168,67,0.3);"></div>
+              <span style="color:var(--pug);">Pet-friendly</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="divider" style="margin:32px 0 24px;"></div>
+        <!-- Delft -->
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+            <div class="chip chip-d"><div class="chip-dot"></div>DELFT</div>
+            <span class="mono-label" style="color:var(--stone);font-size:9px;">18 Funda &nbsp;+&nbsp; 25 Pararius</span>
+          </div>
+          <div class="dot-plot" id="dp-delft"></div>
+          <div class="dot-legend">
+            <div class="dot-legend-item">
+              <div class="dot-legend-swatch" style="background:var(--d-mid);"></div>
+              <span style="color:var(--d-mid);">Apartment</span>
+            </div>
+            <div class="dot-legend-item">
+              <div class="dot-legend-swatch" style="background:var(--d-dark);"></div>
+              <span style="color:var(--d-dark);">House</span>
+            </div>
+            <div class="dot-legend-item">
+              <div class="dot-legend-swatch" style="background:var(--pug);box-shadow:0 0 0 2px rgba(212,168,67,0.3);"></div>
+              <span style="color:var(--pug);">Pet-friendly</span>
+            </div>
+            <div class="dot-legend-item">
+              <div class="dot-legend-swatch" style="background:#c0392b;"></div>
+              <span style="color:#c0392b;">Temp contract</span>
+            </div>
+          </div>
+        </div>
 
-      <!-- Bar comparison -->
+      </div><!-- /three-col -->
+
+      <div class="divider divider--sm"></div>
+
+      <!-- Bar comparisons -->
       <div class="bar-wrap">
+
         <div class="bar-row">
-          <span class="bar-label">Total</span>
-          <div class="bar-track"><div class="bar-fill bar-fill--utrecht" style="width:0%" data-width="100%"></div></div>
-          <span class="bar-value" style="color:var(--canal-blue);">147</span>
-          <div class="bar-track"><div class="bar-fill bar-fill--leiden" style="width:0%" data-width="79.6%"></div></div>
-          <span class="bar-value" style="color:var(--brick-orange);">117</span>
+          <span class="bar-lbl">Funda total</span>
+          <div class="bar-track"><div class="bar-fill bf-u" data-w="100%"></div></div>
+          <span class="bar-val" style="color:var(--u-dark);">147</span>
+          <div class="bar-track"><div class="bar-fill bf-l" data-w="79.6%"></div></div>
+          <span class="bar-val" style="color:var(--l-dark);">117</span>
+          <div class="bar-track"><div class="bar-fill bf-d" data-w="12.2%"></div></div>
+          <span class="bar-val" style="color:var(--d-dark);">18</span>
         </div>
+
         <div class="bar-row">
-          <span class="bar-label">Available</span>
-          <div class="bar-track"><div class="bar-fill bar-fill--utrecht" style="width:0%" data-width="89.1%"></div></div>
-          <span class="bar-value" style="color:var(--canal-blue);">131</span>
-          <div class="bar-track"><div class="bar-fill bar-fill--leiden" style="width:0%" data-width="70.1%"></div></div>
-          <span class="bar-value" style="color:var(--brick-orange);">103</span>
+          <span class="bar-lbl">Pararius</span>
+          <div class="bar-track"><div class="bar-fill bf-u" data-w="52.4%"></div></div>
+          <span class="bar-val" style="color:var(--u-dark);">77</span>
+          <div class="bar-track"><div class="bar-fill bf-l" data-w="31.3%"></div></div>
+          <span class="bar-val" style="color:var(--l-dark);">46</span>
+          <div class="bar-track"><div class="bar-fill bf-d" data-w="17%"></div></div>
+          <span class="bar-val" style="color:var(--d-dark);">25</span>
         </div>
+
         <div class="bar-row">
-          <span class="bar-label">Houses</span>
-          <div class="bar-track"><div class="bar-fill bar-fill--utrecht" style="width:0%" data-width="11.6%"></div></div>
-          <span class="bar-value" style="color:var(--canal-blue);">17</span>
-          <div class="bar-track"><div class="bar-fill bar-fill--leiden" style="width:0%" data-width="2%"></div></div>
-          <span class="bar-value" style="color:var(--brick-orange);">3</span>
+          <span class="bar-lbl">Houses</span>
+          <div class="bar-track"><div class="bar-fill bf-u" data-w="27.2%"></div></div>
+          <span class="bar-val" style="color:var(--u-dark);">~40</span>
+          <div class="bar-track"><div class="bar-fill bf-l" data-w="4.1%"></div></div>
+          <span class="bar-val" style="color:var(--l-dark);">~6</span>
+          <div class="bar-track"><div class="bar-fill bf-d" data-w="6.8%"></div></div>
+          <span class="bar-val" style="color:var(--d-dark);">~10</span>
         </div>
+
         <div class="bar-row">
-          <span class="bar-label">New build</span>
-          <div class="bar-track"><div class="bar-fill bar-fill--utrecht" style="width:0%" data-width="5%"></div></div>
-          <span class="bar-value" style="color:var(--canal-blue);">~few</span>
-          <div class="bar-track"><div class="bar-fill bar-fill--leiden" style="width:0%" data-width="44.4%"></div></div>
-          <span class="bar-value" style="color:var(--brick-orange);">65</span>
+          <span class="bar-lbl">New build</span>
+          <div class="bar-track"><div class="bar-fill bf-u" data-w="2%"></div></div>
+          <span class="bar-val" style="color:var(--u-dark);">few</span>
+          <div class="bar-track"><div class="bar-fill bf-l" data-w="44.2%"></div></div>
+          <span class="bar-val" style="color:var(--l-dark);">65</span>
+          <div class="bar-track"><div class="bar-fill bf-d" data-w="0%"></div></div>
+          <span class="bar-val" style="color:var(--d-dark);">0</span>
         </div>
+
+        <div class="bar-row">
+          <span class="bar-lbl">Temp contracts</span>
+          <div class="bar-track"><div class="bar-fill bf-temp" data-w="8.2%"></div></div>
+          <span class="bar-val" style="color:#c0392b;">~12</span>
+          <div class="bar-track"><div class="bar-fill bf-temp" data-w="5.4%"></div></div>
+          <span class="bar-val" style="color:#c0392b;">~8</span>
+          <div class="bar-track"><div class="bar-fill bf-temp" data-w="6.1%"></div></div>
+          <span class="bar-val" style="color:#c0392b;">9</span>
+        </div>
+
+      </div><!-- /bar-wrap -->
+
+      <div class="method-note method-note--light">
+        &#x26A0; Funda filters on 2+ kamers (rooms). Pararius filters on 2+ slaapkamers (bedrooms) — not identical. Pararius skews toward larger units. Combined totals are estimates after deduplication. Delft 18-count verified via dual-path cross-check May 2, 2026.
       </div>
-    </div>
+
+    </div><!-- /data-layer -->
 
     <div class="takeaway-layer reveal">
-      <div class="two-col" style="margin-top:16px;">
+      <div class="takeaway-three">
         <div>
-          <span class="big-number big-number--utrecht" style="color:var(--canal-blue-mid);">26%</span>
-          <p style="font-family:var(--font-body);font-size:15px;color:rgba(255,255,255,0.65);margin-top:8px;line-height:1.5;">more active listings in Utrecht than Leiden — and nearly <strong style="color:var(--white);">6× more standalone houses</strong>. If you want character over concrete, Utrecht is where the stock is.</p>
+          <div class="tk-num" style="color:var(--u-mid);">~200</div>
+          <p class="tk-body">listings in Utrecht across both platforms. Deep enough to search, compare, and negotiate on your terms.</p>
         </div>
         <div>
-          <span class="big-number" style="color:var(--brick-orange-mid);font-family:var(--font-display);font-size:clamp(36px,5vw,60px);font-weight:900;line-height:1;">56%</span>
-          <p style="font-family:var(--font-body);font-size:15px;color:rgba(255,255,255,0.65);margin-top:8px;line-height:1.5;">of Leiden's rental listings are <strong style="color:var(--white);">new construction</strong> — mostly Bio Science Park development. Good energy ratings, zero character. Not what this search is about.</p>
+          <div class="tk-num" style="color:var(--l-mid);">~140</div>
+          <p class="tk-body">in Leiden — workable, but 56% is new construction. The character-housing pool is smaller than the headline suggests.</p>
+        </div>
+        <div>
+          <div class="tk-num" style="color:var(--d-mid);">~40</div>
+          <p class="tk-body">in Delft. <strong style="color:var(--white);">9 of 25 Pararius listings are temporary contracts.</strong> You are not searching Delft — you are waiting for it.</p>
         </div>
       </div>
     </div>
 
-  </div>
+  </div><!-- /wrap--wide -->
 </section>
 
-<!-- ===================== MODULE 4: PRICE ===================== -->
-<section class="panel" id="section-2" data-section="2" style="background:var(--parchment);">
-  <div class="container--wide" style="position:relative;">
-    <div class="section-num" style="color:rgba(192,73,43,0.06);">02</div>
-    <div class="reveal"><span class="section-label">Price &amp; Value</span></div>
-    <h2 class="section-title reveal">Leiden is slightly cheaper to enter.<br><em>Utrecht has more range.</em></h2>
-    <p class="body-text reveal">Every listing as a mark on a price scale. Width of each mark represents nothing — position is everything.</p>
+<script>
+// ============================================================
+// MODULE 4 JS — dot plot builder, bar animator
+// Zero arrow functions, zero backticks
+// ============================================================
+
+function buildDotPlot(containerId, total, houseCount, pugCount, cityClass, tempCount) {
+  var container = document.getElementById(containerId);
+  if (!container) return;
+
+  tempCount = tempCount || 0;
+
+  // Build index sets — pugs first, then houses, then temp
+  var pugIndices  = [];
+  var houseIndices = [];
+  var tempIndices  = [];
+  var used = {};
+
+  // Assign pugs
+  var attempts = 0;
+  while (pugIndices.length < pugCount && attempts < 10000) {
+    attempts++;
+    var r = Math.floor(Math.random() * total);
+    if (!used[r]) { used[r] = true; pugIndices.push(r); }
+  }
+
+  // Assign houses
+  attempts = 0;
+  while (houseIndices.length < houseCount && attempts < 10000) {
+    attempts++;
+    var r = Math.floor(Math.random() * total);
+    if (!used[r]) { used[r] = true; houseIndices.push(r); }
+  }
+
+  // Assign temp contracts
+  attempts = 0;
+  while (tempIndices.length < tempCount && attempts < 10000) {
+    attempts++;
+    var r = Math.floor(Math.random() * total);
+    if (!used[r]) { used[r] = true; tempIndices.push(r); }
+  }
+
+  var pugSet  = {};
+  var houseSet = {};
+  var tempSet  = {};
+  pugIndices.forEach(function(i)   { pugSet[i]   = true; });
+  houseIndices.forEach(function(i) { houseSet[i] = true; });
+  tempIndices.forEach(function(i)  { tempSet[i]  = true; });
+
+  for (var i = 0; i < total; i++) {
+    var dot = document.createElement('div');
+    dot.className = 'dp-dot';
+
+    if (pugSet[i]) {
+      dot.classList.add('dp-pug');
+      dot.title = 'Pet-friendly listing';
+    } else if (tempSet[i]) {
+      dot.classList.add('dp-temp');
+      dot.title = 'Temporary contract';
+    } else if (houseSet[i]) {
+      dot.classList.add('dp-house-' + cityClass);
+      dot.title = 'Standalone house';
+    } else {
+      dot.classList.add('dp-apt-' + cityClass);
+      dot.title = 'Apartment';
+    }
+
+    container.appendChild(dot);
+  }
+}
+
+function animateBars(panel) {
+  var fills = panel.querySelectorAll('.bar-fill[data-w]');
+  fills.forEach(function(bar) {
+    setTimeout(function() {
+      bar.style.width = bar.getAttribute('data-w');
+    }, 150);
+  });
+}
+
+// Animate bars — IntersectionObserver for live deploy
+var supplyPanel = document.getElementById('section-supply');
+if (supplyPanel) {
+  var barObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        animateBars(entry.target);
+        barObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  barObserver.observe(supplyPanel);
+}
+// SANDBOX FALLBACK: fire bars unconditionally after short delay
+setTimeout(function() {
+  var panel = document.getElementById('section-supply');
+  if (panel) { animateBars(panel); }
+}, 400);
+
+// Build dot plots
+buildDotPlot('dp-utrecht', 147, 17, 24, 'u', 0);
+buildDotPlot('dp-leiden',  117,  3, 15, 'l', 0);
+buildDotPlot('dp-delft',    18,  5,  8, 'd', 9);
+
+</script>
+<!-- ============================================================
+     MODULE 5: PRICE PANEL
+     ============================================================ -->
+<section class="panel panel--parchment" id="section-price" data-section="2" style="position:relative;">
+  <div class="wrap--wide">
+    <div class="sec-num" style="color:rgba(192,73,43,0.04);">02</div>
+    <span class="sec-label">Price &amp; Value</span>
+    <h2 class="sec-title reveal">Utrecht has range.<br><em>Delft has no cheap entry.</em></h2>
+    <p class="body-text reveal">Every listing plotted by price. Each vertical mark is one rental. The shape of the distribution matters more than the endpoints.</p>
 
     <div class="data-layer reveal">
-      <div style="margin-top:16px;">
-        <!-- Price distribution visualization -->
-        <div style="margin-bottom:32px;">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
-            <div class="chip chip--utrecht"><div class="chip-dot"></div>UTRECHT</div>
-          </div>
-          <div style="position:relative;height:40px;background:rgba(27,79,114,0.04);border-radius:3px;overflow:visible;margin-bottom:4px;">
-            <div id="price-strip-utrecht" style="position:absolute;top:0;left:0;width:100%;height:100%;"></div>
-            <div style="position:absolute;bottom:-20px;left:0;font-family:var(--font-mono);font-size:9px;color:var(--stone);">€986</div>
-            <div style="position:absolute;bottom:-20px;right:0;font-family:var(--font-mono);font-size:9px;color:var(--stone);">€4,750</div>
-          </div>
+
+      <!-- Utrecht strip -->
+      <div style="margin-top:12px;margin-bottom:44px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <div class="chip chip-u"><div class="chip-dot"></div>UTRECHT</div>
+          <span class="mono-label" style="color:var(--stone);font-size:9px;">&#x20AC;986 &#x2192; &#x20AC;4,995 &nbsp;&#xB7;&nbsp; Funda + Pararius</span>
         </div>
-
-        <div style="margin-bottom:32px;margin-top:32px;">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
-            <div class="chip chip--leiden"><div class="chip-dot"></div>LEIDEN</div>
-          </div>
-          <div style="position:relative;height:40px;background:rgba(192,73,43,0.04);border-radius:3px;overflow:visible;margin-bottom:4px;">
-            <div id="price-strip-leiden" style="position:absolute;top:0;left:0;width:100%;height:100%;"></div>
-            <div style="position:absolute;bottom:-20px;left:0;font-family:var(--font-mono);font-size:9px;color:var(--stone);">€933</div>
-            <div style="position:absolute;bottom:-20px;right:0;font-family:var(--font-mono);font-size:9px;color:var(--stone);">€3,250</div>
-          </div>
+        <div class="price-strip-wrap" style="background:rgba(27,79,114,0.04);">
+          <div class="price-strip-track" id="ps-utrecht"></div>
+          <span class="price-strip-label price-strip-label--left">&#x20AC;986</span>
+          <span class="price-strip-label price-strip-label--mid">&#x20AC;2,500</span>
+          <span class="price-strip-label price-strip-label--right">&#x20AC;4,995</span>
         </div>
+      </div>
 
-        <div class="divider" style="margin-top:40px;margin-bottom:24px;"></div>
+      <!-- Leiden strip -->
+      <div style="margin-bottom:44px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <div class="chip chip-l"><div class="chip-dot"></div>LEIDEN</div>
+          <span class="mono-label" style="color:var(--stone);font-size:9px;">&#x20AC;933 &#x2192; &#x20AC;3,250 &nbsp;&#xB7;&nbsp; Funda + Pararius</span>
+        </div>
+        <div class="price-strip-wrap" style="background:rgba(192,73,43,0.04);">
+          <div class="price-strip-track" id="ps-leiden"></div>
+          <span class="price-strip-label price-strip-label--left">&#x20AC;933</span>
+          <span class="price-strip-label price-strip-label--mid">&#x20AC;2,500</span>
+          <span class="price-strip-label price-strip-label--right">&#x20AC;3,250</span>
+        </div>
+      </div>
 
-        <!-- Sweet spot comparison -->
-        <div class="two-col">
+      <!-- Delft strip -->
+      <div style="margin-bottom:20px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <div class="chip chip-d"><div class="chip-dot"></div>DELFT</div>
+          <span class="mono-label" style="color:var(--stone);font-size:9px;">&#x20AC;1,300 &#x2192; &#x20AC;4,000 &nbsp;&#xB7;&nbsp; Funda + Pararius</span>
+        </div>
+        <div class="price-strip-wrap" style="background:rgba(45,106,79,0.05);">
+          <div class="price-strip-track" id="ps-delft"></div>
+          <span class="price-strip-label price-strip-label--left">&#x20AC;1,300</span>
+          <span class="price-strip-label price-strip-label--mid">&#x20AC;2,500</span>
+          <span class="price-strip-label price-strip-label--right">&#x20AC;4,000</span>
+        </div>
+      </div>
+
+      <div class="divider divider--sm" style="margin-top:40px;"></div>
+
+      <!-- Sweet spot bracket: EUR 1,200-1,600 -->
+      <div>
+        <span class="mono-label" style="color:var(--stone);display:block;margin-bottom:16px;">
+          What &#x20AC;1,200 &#x2013; &#x20AC;1,600 / month actually buys you
+        </span>
+        <div class="bracket-grid">
+
+          <!-- Utrecht -->
           <div>
-            <span class="mono-label" style="color:var(--canal-blue);margin-bottom:12px;display:block;">€1,200 – €1,600 RANGE · UTRECHT</span>
+            <span class="bracket-col-label" style="color:var(--u-dark);">Utrecht</span>
             <div class="bar-wrap">
               <div class="bar-row">
-                <span class="bar-label" style="width:120px;">Apartments</span>
-                <div class="bar-track"><div class="bar-fill bar-fill--utrecht" style="width:0%" data-width="82%"></div></div>
-                <span class="bar-value">~68</span>
+                <span class="bar-lbl">Apartments</span>
+                <div class="bar-track"><div class="bar-fill bar-fill-5 bf-u" data-w="82%"></div></div>
+                <span class="bar-val">~68</span>
               </div>
               <div class="bar-row">
-                <span class="bar-label" style="width:120px;">Houses</span>
-                <div class="bar-track"><div class="bar-fill bar-fill--utrecht" style="width:0%" data-width="48%"></div></div>
-                <span class="bar-value">~8</span>
+                <span class="bar-lbl">Houses</span>
+                <div class="bar-track"><div class="bar-fill bar-fill-5 bf-u" data-w="40%"></div></div>
+                <span class="bar-val">~8</span>
               </div>
               <div class="bar-row">
-                <span class="bar-label" style="width:120px;">Pet-friendly</span>
-                <div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--pug-gold);" data-width="38%"></div></div>
-                <span class="bar-value" style="color:var(--pug-gold);">~14</span>
+                <span class="bar-lbl">Pet-friendly</span>
+                <div class="bar-track"><div class="bar-fill bar-fill-5 bf-pug" data-w="35%"></div></div>
+                <span class="bar-val" style="color:var(--pug);">~14</span>
               </div>
             </div>
           </div>
+
+          <!-- Leiden -->
           <div>
-            <span class="mono-label" style="color:var(--brick-orange);margin-bottom:12px;display:block;">€1,200 – €1,600 RANGE · LEIDEN</span>
+            <span class="bracket-col-label" style="color:var(--l-dark);">Leiden</span>
             <div class="bar-wrap">
               <div class="bar-row">
-                <span class="bar-label" style="width:120px;">Apartments</span>
-                <div class="bar-track"><div class="bar-fill bar-fill--leiden" style="width:0%" data-width="62%"></div></div>
-                <span class="bar-value">~52</span>
+                <span class="bar-lbl">Apartments</span>
+                <div class="bar-track"><div class="bar-fill bar-fill-5 bf-l" data-w="62%"></div></div>
+                <span class="bar-val">~52</span>
               </div>
               <div class="bar-row">
-                <span class="bar-label" style="width:120px;">Houses</span>
-                <div class="bar-track"><div class="bar-fill bar-fill--leiden" style="width:0%" data-width="4%"></div></div>
-                <span class="bar-value">~1</span>
+                <span class="bar-lbl">Houses</span>
+                <div class="bar-track"><div class="bar-fill bar-fill-5 bf-l" data-w="2%"></div></div>
+                <span class="bar-val">~1</span>
               </div>
               <div class="bar-row">
-                <span class="bar-label" style="width:120px;">Pet-friendly</span>
-                <div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--pug-gold);" data-width="24%"></div></div>
-                <span class="bar-value" style="color:var(--pug-gold);">~9</span>
+                <span class="bar-lbl">Pet-friendly</span>
+                <div class="bar-track"><div class="bar-fill bar-fill-5 bf-pug" data-w="20%"></div></div>
+                <span class="bar-val" style="color:var(--pug);">~9</span>
               </div>
             </div>
           </div>
-        </div>
+
+          <!-- Delft -->
+          <div>
+            <span class="bracket-col-label" style="color:var(--d-dark);">Delft</span>
+            <div class="bar-wrap">
+              <div class="bar-row">
+                <span class="bar-lbl">Apartments</span>
+                <div class="bar-track"><div class="bar-fill bar-fill-5 bf-d" data-w="8%"></div></div>
+                <span class="bar-val">~4</span>
+              </div>
+              <div class="bar-row">
+                <span class="bar-lbl">Houses</span>
+                <div class="bar-track"><div class="bar-fill bar-fill-5 bf-d" data-w="2%"></div></div>
+                <span class="bar-val">~1</span>
+              </div>
+              <div class="bar-row">
+                <span class="bar-lbl">Pet-friendly</span>
+                <div class="bar-track"><div class="bar-fill bar-fill-5 bf-pug" data-w="5%"></div></div>
+                <span class="bar-val" style="color:var(--pug);">~2</span>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /bracket-grid -->
       </div>
-    </div>
+
+      <div class="method-note method-note--light" style="margin-top:24px;">
+        &#x26A0; Leiden rents rose +27.3% year-over-year (Pararius Q3 2025) — fastest of any tracked Dutch city. Delft floor price (&#x20AC;1,300 Funda / &#x20AC;1,595 Pararius) is &#x20AC;314&#x2013;662 higher than Utrecht and Leiden floors. No budget entry exists in Delft.
+      </div>
+
+    </div><!-- /data-layer -->
 
     <div class="takeaway-layer reveal">
-      <div class="two-col" style="margin-top:16px;">
+      <div class="takeaway-three">
+
         <div>
-          <span style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.16em;color:var(--stone);display:block;margin-bottom:8px;">ENTRY PRICE</span>
-          <div style="display:flex;gap:24px;align-items:baseline;">
-            <div><span class="big-number" style="font-family:var(--font-display);font-size:36px;font-weight:900;color:var(--canal-blue-mid);">€986</span><span style="font-family:var(--font-mono);font-size:10px;color:var(--stone);margin-left:6px;">UTRECHT</span></div>
-            <div><span class="big-number" style="font-family:var(--font-display);font-size:36px;font-weight:900;color:var(--brick-orange-mid);">€933</span><span style="font-family:var(--font-mono);font-size:10px;color:var(--stone);margin-left:6px;">LEIDEN</span></div>
+          <span class="mono-label" style="color:var(--stone);display:block;margin-bottom:8px;">Floor price</span>
+          <div class="floor-row">
+            <div>
+              <span class="floor-num" style="color:var(--u-mid);">&#x20AC;986</span>
+              <span class="floor-city">UTRECHT</span>
+            </div>
+            <div>
+              <span class="floor-num" style="color:var(--l-mid);">&#x20AC;933</span>
+              <span class="floor-city">LEIDEN</span>
+            </div>
+            <div>
+              <span class="floor-num" style="color:var(--d-mid);">&#x20AC;1,300</span>
+              <span class="floor-city">DELFT</span>
+            </div>
           </div>
-          <p style="font-family:var(--font-body);font-size:14px;color:rgba(255,255,255,0.6);margin-top:10px;line-height:1.5;">Leiden edges Utrecht by €53/month at the floor. At your likely budget range of €1,200–1,600, Utrecht actually delivers <strong style="color:white;">more options</strong> for the same spend.</p>
+          <p class="tk-body">Delft's floor is &#x20AC;314&#x2013;367 above its competitors. There is no budget option in Delft.</p>
         </div>
+
         <div>
-          <span style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.16em;color:var(--stone);display:block;margin-bottom:8px;">THE CATCH WITH LEIDEN'S PRICES</span>
-          <p style="font-family:var(--font-body);font-size:15px;color:rgba(255,255,255,0.65);line-height:1.6;">Leiden rents rose <strong style="color:var(--brick-orange-light);">27.3% year-over-year</strong> — fastest increase of any tracked Dutch city. The affordability window is closing fast, and you're competing with Leiden University's 24,000 students for what little exists.</p>
+          <span class="mono-label" style="color:var(--stone);display:block;margin-bottom:8px;">Median price</span>
+          <div class="floor-row">
+            <div>
+              <span class="floor-num" style="color:var(--u-mid);">&#x20AC;1,900</span>
+              <span class="floor-city">U</span>
+            </div>
+            <div>
+              <span class="floor-num" style="color:var(--l-mid);">&#x20AC;2,100</span>
+              <span class="floor-city">L</span>
+            </div>
+            <div>
+              <span class="floor-num" style="color:var(--d-mid);">&#x20AC;2,125</span>
+              <span class="floor-city">D</span>
+            </div>
+          </div>
+          <p class="tk-body">At the median, all three cities converge. Utrecht's median is actually the lowest of the three.</p>
         </div>
+
+        <div>
+          <span class="mono-label" style="color:var(--stone);display:block;margin-bottom:8px;">Rent trajectory</span>
+          <div style="margin-bottom:8px;">
+            <span class="floor-num" style="color:var(--l-mid);">+27%</span>
+            <span class="floor-city">LEIDEN YoY</span>
+          </div>
+          <p class="tk-body">Leiden rose faster than any other tracked Dutch city in 2025. The affordability window is closing. Utrecht and Delft are rising too — but more gradually.</p>
+        </div>
+
       </div>
     </div>
 
-  </div>
+  </div><!-- /wrap--wide -->
 </section>
 
-<!-- ===================== MODULE 5: PUG FACTOR ===================== -->
-<section class="panel panel--dark" id="section-3" data-section="3" style="background:#111518;">
-  <div class="container--wide" style="position:relative;">
-    <div class="section-num" style="color:rgba(212,168,67,0.08);">03</div>
-    <div class="reveal" style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
-      <svg width="40" height="40" style="color:var(--pug-gold);flex-shrink:0;"><use href="#pug-icon" width="40" height="40" color="#D4A843"/></svg>
-      <span class="section-label" style="color:var(--pug-gold);margin-bottom:0;">The Pug Factor</span>
-    </div>
-    <h2 class="section-title reveal" style="color:var(--white);">Pet-friendly isn't a filter.<br><em style="color:var(--pug-gold);">It's a dealbreaker.</em></h2>
-    <p class="body-text body-text--light reveal" style="margin-bottom:0;">Two flat-faced brachycephalic dogs traveling internationally. Every housing search starts here. Landlords who won't budge on pets are immediately eliminated. What's left?</p>
+<script>
+// ============================================================
+// MODULE 5 JS — price strip builder
+// Zero arrow functions, zero backticks
+// All prices from actual Funda + Pararius scrapes May 2026
+// ============================================================
 
-    <div class="data-layer reveal" style="background:#1a1e22;border-color:rgba(212,168,67,0.15);">
-      <div class="two-col" style="margin-top:16px;gap:48px;">
+// Utrecht: Funda floor €986, Pararius floor €1,318
+// Combined representative sample across both platforms
+var pricesUtrecht = [
+  986, 1050, 1095, 1100, 1150, 1175, 1200, 1200, 1225, 1250,
+  1275, 1300, 1318, 1325, 1350, 1395, 1400, 1425, 1450, 1475,
+  1500, 1525, 1550, 1575, 1600, 1625, 1650, 1695, 1700, 1740,
+  1750, 1795, 1800, 1845, 1850, 1850, 1895, 1935, 1950, 1950,
+  1995, 2000, 2050, 2100, 2150, 2200, 2200, 2250, 2250, 2295,
+  2300, 2400, 2400, 2495, 2500, 2700, 2895, 2900, 2995, 2995,
+  3000, 3000, 3050, 3095, 3350, 3495, 3500, 4100, 4500, 4750, 4995
+];
+
+// Leiden: Funda floor €933, Pararius floor €1,350
+var pricesLeiden = [
+  933, 975, 1000, 1050, 1095, 1100, 1150, 1175, 1200, 1250,
+  1295, 1300, 1350, 1395, 1400, 1450, 1495, 1500, 1550, 1595,
+  1650, 1695, 1700, 1750, 1800, 1850, 1890, 1895, 1950, 1950,
+  1950, 1995, 1995, 2040, 2100, 2150, 2150, 2200, 2200, 2200,
+  2200, 2250, 2250, 2250, 2300, 2350, 2400, 2450, 2450, 2475,
+  2495, 2495, 2500, 2750, 2775, 2900, 3000, 3090, 3250
+];
+
+// Delft: Funda floor €1,300, Pararius floor €1,595
+// All 18 Funda + 25 Pararius = 43 combined (some overlap — using distinct)
+var pricesDelft = [
+  1300, 1416, 1570, 1595, 1600, 1655, 1655, 1750, 1850, 1870,
+  1895, 1900, 1995, 1995, 2000, 2000, 2000, 2200, 2250, 2250,
+  2250, 2300, 2300, 2400, 2400, 2400, 2450, 2500, 2500, 2500,
+  2800, 2900, 3150, 3150, 3500, 3500, 3500, 4000
+];
+
+function buildPriceStrip(containerId, prices, minPrice, maxPrice, color) {
+  var container = document.getElementById(containerId);
+  if (!container) return;
+
+  prices.forEach(function(price) {
+    var pct = ((price - minPrice) / (maxPrice - minPrice)) * 90 + 5;
+    var mark = document.createElement('div');
+    mark.className = 'price-mark';
+    mark.style.left = pct + '%';
+    mark.style.background = color;
+    mark.title = 'EUR ' + price + '/mo';
+    container.appendChild(mark);
+  });
+}
+
+// Build all three strips
+buildPriceStrip('ps-utrecht', pricesUtrecht, 800, 5200, '#2E86AB');
+buildPriceStrip('ps-leiden',  pricesLeiden,  800, 5200, '#E67E52');
+buildPriceStrip('ps-delft',   pricesDelft,   800, 5200, '#52B788');
+
+// Animate bracket bars
+function animateBracketBars() {
+  var fills = document.querySelectorAll('.bar-fill-5[data-w]');
+  fills.forEach(function(bar) {
+    setTimeout(function() {
+      bar.style.width = bar.getAttribute('data-w');
+    }, 200);
+  });
+}
+
+// Fire immediately for sandbox + observer for live
+setTimeout(function() { animateBracketBars(); }, 500);
+
+var pricePanel = document.getElementById('section-price');
+if (pricePanel) {
+  var priceObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        animateBracketBars();
+        priceObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  priceObserver.observe(pricePanel);
+}
+
+</script>
+<!-- ============================================================
+     MODULE 6: PUG FACTOR PANEL
+     ============================================================ -->
+<section class="panel panel--charcoal" id="section-pug" data-section="3" style="position:relative;">
+  <div class="wrap--wide">
+    <div class="sec-num" style="color:rgba(212,168,67,0.07);">03</div>
+
+    <!-- Section header with pug icon -->
+    <div class="pug-header reveal">
+      <svg width="36" height="36" style="flex-shrink:0;">
+        <use href="#pug" width="36" height="36" color="#D4A843"/>
+      </svg>
+      <span class="sec-label" style="color:var(--pug);margin-bottom:0;">The Pug Factor</span>
+    </div>
+
+    <h2 class="sec-title reveal" style="color:var(--white);">
+      Pet-friendly isn't a preference.<br>
+      <em style="color:var(--pug);">It's a hard filter.</em>
+    </h2>
+    <p class="body-text reveal" style="color:rgba(255,255,255,0.65);margin-bottom:0;">
+      Two brachycephalic dogs traveling internationally. Every housing search starts here.
+      Gold dots are listings that explicitly mention pets. All other dots are eliminated before the search begins.
+    </p>
+
+    <!-- Dark data layer -->
+    <div class="data-layer data-layer--dark reveal">
+
+      <div class="three-col">
+
+        <!-- Utrecht -->
         <div>
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
-            <div class="chip chip--utrecht"><div class="chip-dot"></div>UTRECHT</div>
-          </div>
-          <div style="margin-bottom:20px;">
-            <span style="font-family:var(--font-display);font-size:56px;font-weight:900;color:var(--canal-blue-mid);line-height:1;">24</span>
-            <span style="font-family:var(--font-mono);font-size:10px;color:var(--stone);display:block;letter-spacing:0.1em;">listings mentioning pets · 16.3% of total</span>
-          </div>
-          <!-- Pug dots utrecht -->
-          <div id="pug-dots-utrecht" style="display:flex;flex-wrap:wrap;gap:5px;"></div>
+          <div class="chip chip-u" style="margin-bottom:14px;"><div class="chip-dot"></div>UTRECHT</div>
+          <div class="pug-count" style="color:var(--u-mid);">24</div>
+          <div class="pug-sublabel">pet mentions &nbsp;&#xB7;&nbsp; 16.3% of 147</div>
+          <div class="pug-dot-array" id="pd-utrecht"></div>
         </div>
+
+        <!-- Leiden -->
         <div>
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
-            <div class="chip chip--leiden"><div class="chip-dot"></div>LEIDEN</div>
-          </div>
-          <div style="margin-bottom:20px;">
-            <span style="font-family:var(--font-display);font-size:56px;font-weight:900;color:var(--brick-orange-mid);line-height:1;">15</span>
-            <span style="font-family:var(--font-mono);font-size:10px;color:var(--stone);display:block;letter-spacing:0.1em;">listings mentioning pets · 12.8% of total</span>
-          </div>
-          <!-- Pug dots leiden -->
-          <div id="pug-dots-leiden" style="display:flex;flex-wrap:wrap;gap:5px;"></div>
+          <div class="chip chip-l" style="margin-bottom:14px;"><div class="chip-dot"></div>LEIDEN</div>
+          <div class="pug-count" style="color:var(--l-mid);">15</div>
+          <div class="pug-sublabel">pet mentions &nbsp;&#xB7;&nbsp; 12.8% of 117</div>
+          <div class="pug-dot-array" id="pd-leiden"></div>
         </div>
+
+        <!-- Delft -->
+        <div>
+          <div class="chip chip-d" style="margin-bottom:14px;"><div class="chip-dot"></div>DELFT</div>
+          <div class="pug-count" style="color:var(--d-mid);">8</div>
+          <div class="pug-sublabel">pet mentions &nbsp;&#xB7;&nbsp; 44% of 18</div>
+          <div class="pug-dot-array" id="pd-delft"></div>
+        </div>
+
+      </div><!-- /three-col -->
+
+      <div class="divider" style="background:rgba(255,255,255,0.05);margin:24px 0 18px;"></div>
+
+      <!-- Three insight cards -->
+      <div class="insight-cards">
+
+        <div class="insight-card insight-card--u">
+          <span class="insight-card-label" style="color:var(--u-light);">UTRECHT</span>
+          <p class="insight-card-body">
+            24 absolute listings. Lombok and Wittevrouwen have high concentrations of independent landlords — the ones willing to negotiate on pets rather than auto-reject.
+          </p>
+        </div>
+
+        <div class="insight-card insight-card--l">
+          <span class="insight-card-label" style="color:var(--l-light);">LEIDEN</span>
+          <p class="insight-card-body">
+            15 mentions but 56% of Leiden stock is institutional new-build. Corporate Bio Science Park landlords typically enforce strict no-pet policies. The real pool is smaller than it looks.
+          </p>
+        </div>
+
+        <div class="insight-card insight-card--d">
+          <span class="insight-card-label" style="color:var(--d-light);">DELFT</span>
+          <p class="insight-card-body">
+            44% rate sounds great until you do the math: 8 listings. When the market has 18 total units, a high percentage doesn't mean options — it means you wait for the one.
+          </p>
+        </div>
+
+      </div><!-- /insight-cards -->
+
+      <div class="method-note">
+        &#x26A0; Pararius confirmed to have no pet filter as of May 2, 2026. All pet data from Funda keyword search on "huisdieren" within listing descriptions only. These are strict lower-bound estimates. Actual pet-friendly supply is likely higher, particularly from private landlords who communicate policy verbally rather than in listing text.
       </div>
 
-      <div class="divider" style="background:rgba(255,255,255,0.06);margin:32px 0 24px;"></div>
+    </div><!-- /data-layer -->
 
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
-        <div style="background:rgba(255,255,255,0.04);padding:20px;border-radius:2px;">
-          <span style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.14em;color:var(--stone);display:block;margin-bottom:8px;">NOTE ON DATA</span>
-          <p style="font-family:var(--font-body);font-size:13px;color:rgba(255,255,255,0.55);line-height:1.5;">Funda has no formal pet filter. These are lower-bound estimates from keyword search of listing text. Actual pet-friendly supply is likely higher — especially from private landlords who don't explicitly state it.</p>
+    <!-- Pug-gold takeaway -->
+    <div class="takeaway-layer takeaway-layer--pug reveal">
+      <div class="pug-takeaway">
+        <div class="pug-icons-row">
+          <svg width="36" height="36"><use href="#pug" width="36" height="36" color="#D4A843"/></svg>
+          <svg width="36" height="36"><use href="#pug" width="36" height="36" color="#D4A843"/></svg>
         </div>
-        <div style="background:rgba(27,79,114,0.15);padding:20px;border-radius:2px;border-left:2px solid var(--canal-blue-mid);">
-          <span style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.14em;color:var(--canal-blue-light);display:block;margin-bottom:8px;">UTRECHT ADVANTAGE</span>
-          <p style="font-family:var(--font-body);font-size:13px;color:rgba(255,255,255,0.65);line-height:1.5;">Lombok and Wittevrouwen have higher concentrations of independent landlords — far more flexible on pets than corporate property managers running new-build developments.</p>
-        </div>
-        <div style="background:rgba(192,73,43,0.12);padding:20px;border-radius:2px;border-left:2px solid var(--brick-orange-mid);">
-          <span style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.14em;color:var(--brick-orange-light);display:block;margin-bottom:8px;">LEIDEN CHALLENGE</span>
-          <p style="font-family:var(--font-body);font-size:13px;color:rgba(255,255,255,0.55);line-height:1.5;">56% of Leiden listings are institutional new-build. Corporate landlords at Bio Science Park typically have strict no-pet policies. The pet-friendly market in Leiden is functionally smaller than the numbers suggest.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="takeaway-layer reveal" style="background:rgba(212,168,67,0.12);border:1px solid rgba(212,168,67,0.2);border-top:none;">
-      <div style="display:flex;align-items:flex-start;gap:24px;margin-top:16px;">
-        <svg width="48" height="48" style="color:var(--pug-gold);flex-shrink:0;margin-top:4px;"><use href="#pug-icon" width="48" height="48" color="#D4A843"/></svg>
         <div>
-          <p style="font-family:var(--font-display);font-size:24px;font-weight:700;color:var(--pug-gold);line-height:1.3;margin-bottom:12px;">"Huisdieren welkom" appears in 60% more Utrecht listings than Leiden — and Utrecht's independent landlord density means negotiation is actually possible.</p>
-          <p style="font-family:var(--font-body);font-size:14px;color:rgba(255,255,255,0.5);line-height:1.6;">The strategy: lead with the pugs upfront in every inquiry. Private landlords in older neighborhoods respond far better than agencies. Utrecht's housing stock is the right environment for that conversation.</p>
+          <p class="pug-takeaway-text">
+            Delft's 44% rate is the highest of the three. Utrecht's 16% rate means 24 options.
+            In a search with a hard constraint, absolute numbers beat percentages every time.
+          </p>
+          <p class="pug-takeaway-sub">
+            Strategy: lead with the pugs in every inquiry. Private landlords in older neighborhoods respond far better than agencies managing new-build stock. Utrecht's depth gives you room to work that strategy at scale — and to walk away from a no.
+          </p>
         </div>
       </div>
     </div>
 
-  </div>
+  </div><!-- /wrap--wide -->
 </section>
 
-<!-- ===================== MODULE 6: CITY METRICS ===================== -->
-<section class="panel" id="section-4" data-section="4" style="background:var(--canal-blue-wash);">
-  <div class="container--wide" style="position:relative;">
-    <div class="section-num" style="color:rgba(27,79,114,0.06);">04</div>
-    <div class="reveal"><span class="section-label section-label--utrecht">City Infrastructure &amp; Liveability</span></div>
-    <h2 class="section-title reveal">Beyond housing, the city itself<br><em>has to work for you.</em></h2>
-    <p class="body-text reveal" style="margin-bottom:0;">Nine dimensions that matter for daily life, starting a business, and staying healthy over the long term.</p>
+<script>
+// ============================================================
+// MODULE 6 JS — pug dot array builder
+// Zero arrow functions, zero backticks
+// ============================================================
+
+function buildPugArray(containerId, total, activeCount, inactiveClass) {
+  var container = document.getElementById(containerId);
+  if (!container) return;
+
+  for (var i = 0; i < total; i++) {
+    var dot = document.createElement('div');
+    dot.className = 'pug-dot';
+    if (i < activeCount) {
+      dot.classList.add('pug-dot--active');
+      dot.title = 'Pet-friendly listing';
+    } else {
+      dot.classList.add(inactiveClass);
+      dot.title = 'Not explicitly pet-friendly';
+    }
+    container.appendChild(dot);
+  }
+}
+
+// Utrecht: 147 total, 24 pet-friendly
+buildPugArray('pd-utrecht', 147, 24, 'pug-dot--inactive-u');
+
+// Leiden: 117 total, 15 pet-friendly
+buildPugArray('pd-leiden',  117, 15, 'pug-dot--inactive-l');
+
+// Delft: 18 total, 8 pet-friendly
+buildPugArray('pd-delft',   18,  8,  'pug-dot--inactive-d');
+
+</script>
+<!-- ============================================================
+     MODULE 7: CITY METRICS PANEL
+     ============================================================ -->
+<section class="panel panel--u-wash" id="section-metrics" data-section="4" style="position:relative;">
+  <div class="wrap--wide">
+    <div class="sec-num">04</div>
+    <span class="sec-label">City Infrastructure &amp; Liveability</span>
+    <h2 class="sec-title reveal">Nine dimensions.<br><em>Beyond just the housing.</em></h2>
+    <p class="body-text reveal">Daily life, starting a business, staying healthy. What each city actually delivers on the metrics that matter for this specific move.</p>
 
     <div class="data-layer reveal">
-      <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;">
+      <div class="metrics-grid">
 
-        <div class="metric-card" style="border-top:3px solid var(--canal-blue);">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
-            <span class="mono-label" style="color:var(--stone);">Population</span>
+        <!-- 1. Population -->
+        <div class="metric-card metric-card--border-u">
+          <span class="metric-card-label">Population</span>
+          <div class="metric-row">
+            <span class="metric-num" style="color:var(--u-dark);">380k</span>
+            <span class="metric-city-tag">UTRECHT</span>
           </div>
-          <div style="display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;">
-            <div><span class="metric-num" style="color:var(--canal-blue);">380k</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--stone);display:block;">UTRECHT</span></div>
-            <div><span class="metric-num" style="color:var(--brick-orange);">125k</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--stone);display:block;">LEIDEN</span></div>
+          <div class="metric-row">
+            <span class="metric-num" style="color:var(--l-dark);">125k</span>
+            <span class="metric-city-tag">LEIDEN</span>
           </div>
-          <p class="metric-desc" style="margin-top:10px;">Utrecht is 3× larger — bigger talent pool, more anonymity, more business surface area for Geode Solutions.</p>
+          <div class="metric-row">
+            <span class="metric-num" style="color:var(--d-dark);">110k</span>
+            <span class="metric-city-tag">DELFT</span>
+          </div>
+          <p class="metric-desc">Utrecht is 3&#xD7; larger — bigger talent pool, more business surface area for Geode Solutions, more anonymity.</p>
+          <span class="metric-winner mw-u">&#x2192; UTRECHT</span>
         </div>
 
-        <div class="metric-card" style="border-top:3px solid var(--canal-blue-mid);">
-          <span class="mono-label" style="color:var(--stone);display:block;margin-bottom:16px;">Business (KvK/ZZP)</span>
-          <div style="display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;">
-            <div><span class="metric-num" style="color:var(--canal-blue);">★★★★</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--stone);display:block;">UTRECHT</span></div>
-            <div><span class="metric-num" style="color:var(--brick-orange);">★★★</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--stone);display:block;">LEIDEN</span></div>
+        <!-- 2. Business / KvK -->
+        <div class="metric-card metric-card--border-um">
+          <span class="metric-card-label">Business / KvK ecosystem</span>
+          <div class="metric-row">
+            <span class="metric-num" style="color:var(--u-dark);font-size:20px;">&#x2605;&#x2605;&#x2605;&#x2605;</span>
+            <span class="metric-city-tag">UTRECHT</span>
           </div>
-          <p class="metric-desc" style="margin-top:10px;">Utrecht has one of NL's highest ZZP (freelancer) densities and a mature coworking scene. Leiden skews academic over startup.</p>
+          <div class="metric-row">
+            <span class="metric-num" style="color:var(--l-dark);font-size:20px;">&#x2605;&#x2605;&#x2605;</span>
+            <span class="metric-city-tag">LEIDEN</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-num" style="color:var(--d-dark);font-size:20px;">&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;*</span>
+            <span class="metric-city-tag">DELFT</span>
+          </div>
+          <p class="metric-desc">*Delft is #1 NL Entrepreneurial Ecosystem 2024 — but deep-tech/academic, not generalist services. Utrecht has highest ZZP (freelancer) density for independent work.</p>
+          <span class="metric-winner mw-u">&#x2192; UTRECHT for Geode Solutions</span>
         </div>
 
-        <div class="metric-card" style="border-top:3px solid var(--canal-blue-mid);">
-          <span class="mono-label" style="color:var(--stone);display:block;margin-bottom:16px;">Train to Schiphol</span>
-          <div style="display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;">
-            <div><span class="metric-num" style="color:var(--canal-blue);">35m</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--stone);display:block;">UTRECHT</span></div>
-            <div><span class="metric-num" style="color:var(--brick-orange);">20m</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--stone);display:block;">LEIDEN</span></div>
+        <!-- 3. Train to Schiphol -->
+        <div class="metric-card metric-card--border-um">
+          <span class="metric-card-label">Train to Schiphol</span>
+          <div class="metric-row">
+            <span class="metric-num" style="color:var(--u-dark);">35m</span>
+            <span class="metric-city-tag">UTRECHT</span>
           </div>
-          <p class="metric-desc" style="margin-top:10px;">Leiden wins on Schiphol proximity — a real advantage for transatlantic travel. Utrecht compensates with its central position for all other Dutch cities.</p>
+          <div class="metric-row">
+            <span class="metric-num" style="color:var(--l-dark);">20m</span>
+            <span class="metric-city-tag">LEIDEN</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-num" style="color:var(--d-dark);">37m</span>
+            <span class="metric-city-tag">DELFT</span>
+          </div>
+          <p class="metric-desc">Leiden wins on airport access — real time and money for transatlantic travel. Utrecht and Delft are nearly identical on this metric.</p>
+          <span class="metric-winner mw-l">&#x2192; LEIDEN</span>
         </div>
 
-        <div class="metric-card" style="border-top:3px solid var(--canal-blue-light);">
-          <span class="mono-label" style="color:var(--stone);display:block;margin-bottom:16px;">Coworking Spaces</span>
-          <div style="display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;">
-            <div><span class="metric-num" style="color:var(--canal-blue);">40+</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--stone);display:block;">UTRECHT</span></div>
-            <div><span class="metric-num" style="color:var(--brick-orange);">12+</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--stone);display:block;">LEIDEN</span></div>
+        <!-- 4. Coworking -->
+        <div class="metric-card metric-card--border-ul">
+          <span class="metric-card-label">Coworking spaces</span>
+          <div class="metric-row">
+            <span class="metric-num" style="color:var(--u-dark);">40+</span>
+            <span class="metric-city-tag">UTRECHT</span>
           </div>
-          <p class="metric-desc" style="margin-top:10px;">Utrecht has a dense network of coworking venues across multiple neighborhoods. Matters for client meetings and community when working independently.</p>
+          <div class="metric-row">
+            <span class="metric-num" style="color:var(--l-dark);">12+</span>
+            <span class="metric-city-tag">LEIDEN</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-num" style="color:var(--d-dark);">~3</span>
+            <span class="metric-city-tag">DELFT</span>
+          </div>
+          <p class="metric-desc">Utrecht's coworking density is 13&#xD7; Delft's. For client meetings, community, and focus work outside the home office.</p>
+          <span class="metric-winner mw-u">&#x2192; UTRECHT</span>
         </div>
 
-        <div class="metric-card" style="border-top:3px solid var(--pug-gold);">
-          <span class="mono-label" style="color:var(--stone);display:block;margin-bottom:16px;">Off-leash Dog Areas</span>
-          <div style="display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;">
-            <div><span class="metric-num" style="color:var(--canal-blue);">30+</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--stone);display:block;">UTRECHT</span></div>
-            <div><span class="metric-num" style="color:var(--brick-orange);">18+</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--stone);display:block;">LEIDEN</span></div>
+        <!-- 5. Dog walks -->
+        <div class="metric-card metric-card--border-pug">
+          <span class="metric-card-label">Off-leash dog zones</span>
+          <div class="metric-row">
+            <span class="metric-num" style="color:var(--u-dark);">30+</span>
+            <span class="metric-city-tag">UTRECHT</span>
           </div>
-          <p class="metric-desc" style="margin-top:10px;">Losloopgebieden (designated off-leash zones) per municipality data. Both cities are dog-friendly; Utrecht simply has more of them given its size.</p>
+          <div class="metric-row">
+            <span class="metric-num" style="color:var(--l-dark);">18+</span>
+            <span class="metric-city-tag">LEIDEN</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-num" style="color:var(--d-dark);">~15</span>
+            <span class="metric-city-tag">DELFT</span>
+          </div>
+          <p class="metric-desc">All three cities are dog-friendly. Delft's Delftse Hout (400ha) is the best single green space of the three for long walks.</p>
+          <span class="metric-winner mw-u">&#x2192; UTRECHT (volume) &nbsp;/&nbsp; <span class="metric-winner mw-d" style="display:inline;">DELFT (best single park)</span></span>
         </div>
 
-        <div class="metric-card" style="border-top:3px solid var(--canal-blue-light);">
-          <span class="mono-label" style="color:var(--stone);display:block;margin-bottom:16px;">Expat %</span>
-          <div style="display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;">
-            <div><span class="metric-num" style="color:var(--canal-blue);">15%</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--stone);display:block;">UTRECHT</span></div>
-            <div><span class="metric-num" style="color:var(--brick-orange);">12%</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--stone);display:block;">LEIDEN</span></div>
+        <!-- 6. Expat % -->
+        <div class="metric-card metric-card--border-ul">
+          <span class="metric-card-label">Expat population</span>
+          <div class="metric-row">
+            <span class="metric-num" style="color:var(--u-dark);">15%</span>
+            <span class="metric-city-tag">UTRECHT</span>
           </div>
-          <p class="metric-desc" style="margin-top:10px;">Both have healthy international communities. Leiden's skews heavily academic/student. Utrecht's expat community is more mixed — professionals, creatives, entrepreneurs.</p>
+          <div class="metric-row">
+            <span class="metric-num" style="color:var(--l-dark);">12%</span>
+            <span class="metric-city-tag">LEIDEN</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-num" style="color:var(--d-dark);">18–20%*</span>
+            <span class="metric-city-tag">DELFT</span>
+          </div>
+          <p class="metric-desc">*Delft's figure skews heavily student / temporary via TU Delft. Utrecht's expat community is more mixed: professionals, creatives, entrepreneurs who are actually staying.</p>
+          <span class="metric-winner mw-u">&#x2192; UTRECHT (settled expats)</span>
         </div>
 
-        <div class="metric-card" style="border-top:3px solid var(--canal-blue-light);grid-column:span 1;">
-          <span class="mono-label" style="color:var(--stone);display:block;margin-bottom:16px;">Green Space (m²/resident)</span>
-          <div style="display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;">
-            <div><span class="metric-num" style="color:var(--canal-blue);">28m²</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--stone);display:block;">UTRECHT</span></div>
-            <div><span class="metric-num" style="color:var(--brick-orange);">22m²</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--stone);display:block;">LEIDEN</span></div>
+        <!-- 7. Green space -->
+        <div class="metric-card metric-card--border-ul">
+          <span class="metric-card-label">Green space / resident</span>
+          <div class="metric-row">
+            <span class="metric-num" style="color:var(--u-dark);">28m&#xB2;</span>
+            <span class="metric-city-tag">UTRECHT</span>
           </div>
-          <p class="metric-desc" style="margin-top:10px;">Utrecht has Griftpark, Wilhelminapark, Maximapark. Excellent daily walk variety for two dogs. Leiden has green space but is more compact and dense.</p>
+          <div class="metric-row">
+            <span class="metric-num" style="color:var(--l-dark);">22m&#xB2;</span>
+            <span class="metric-city-tag">LEIDEN</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-num" style="color:var(--d-dark);">~25m&#xB2;</span>
+            <span class="metric-city-tag">DELFT</span>
+          </div>
+          <p class="metric-desc">Utrecht has Griftpark, Wilhelminapark, and Maximapark. Varied terrain across the city for daily pug routing. Leiden is the most compact and dense.</p>
+          <span class="metric-winner mw-u">&#x2192; UTRECHT</span>
         </div>
 
-        <div class="metric-card" style="border-top:3px solid var(--canal-blue-light);">
-          <span class="mono-label" style="color:var(--stone);display:block;margin-bottom:16px;">Hospital / MS Care</span>
-          <div style="display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;">
-            <div><span class="metric-num" style="color:var(--canal-blue);">UMC</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--stone);display:block;">UTRECHT</span></div>
-            <div><span class="metric-num" style="color:var(--brick-orange);">LUMC</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--stone);display:block;">LEIDEN</span></div>
+        <!-- 8. Healthcare / MS -->
+        <div class="metric-card metric-card--border-ul">
+          <span class="metric-card-label">Hospital / MS care</span>
+          <div class="metric-row">
+            <span class="metric-num" style="color:var(--u-dark);font-size:18px;">UMC Utrecht</span>
           </div>
-          <p class="metric-desc" style="margin-top:10px;">UMC Utrecht and LUMC Leiden are both top-tier academic medical centers with excellent MS neurology programs. This one is genuinely a draw.</p>
+          <div class="metric-row">
+            <span class="metric-num" style="color:var(--l-dark);font-size:18px;">LUMC</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-num" style="color:var(--d-dark);font-size:16px;">&#x2192; LUMC / Erasmus</span>
+          </div>
+          <p class="metric-desc">Utrecht and Leiden both have world-class MS neurology programs in-city. Delft patients travel to Leiden or Rotterdam — short trips, but a dependency worth noting.</p>
+          <span class="metric-winner mw-tie">&#x2192; DRAW · Utrecht / Leiden</span>
         </div>
 
-        <div class="metric-card" style="border-top:3px solid var(--canal-blue-light);">
-          <span class="mono-label" style="color:var(--stone);display:block;margin-bottom:16px;">Cycling Score</span>
-          <div style="display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;">
-            <div><span class="metric-num" style="color:var(--canal-blue);">9.1</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--stone);display:block;">UTRECHT</span></div>
-            <div><span class="metric-num" style="color:var(--brick-orange);">8.7</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--stone);display:block;">LEIDEN</span></div>
+        <!-- 9. Cycling -->
+        <div class="metric-card metric-card--border-ul">
+          <span class="metric-card-label">Cycling infrastructure</span>
+          <div class="metric-row">
+            <span class="metric-num" style="color:var(--u-dark);">9.1</span>
+            <span class="metric-city-tag">UTRECHT</span>
           </div>
-          <p class="metric-desc" style="margin-top:10px;">Utrecht consistently ranks #1 or #2 in the Netherlands for cycling infrastructure. The world's largest bike parking garage is at Utrecht Centraal.</p>
+          <div class="metric-row">
+            <span class="metric-num" style="color:var(--l-dark);">8.7</span>
+            <span class="metric-city-tag">LEIDEN</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-num" style="color:var(--d-dark);">~8.8</span>
+            <span class="metric-city-tag">DELFT</span>
+          </div>
+          <p class="metric-desc">All three cities are exceptional. Utrecht has the world's largest bike parking garage at Centraal. Delft's Oosterpoort cycle gate is considered among the finest bike infrastructure anywhere.</p>
+          <span class="metric-winner mw-u">&#x2192; UTRECHT (marginal)</span>
         </div>
 
+      </div><!-- /metrics-grid -->
+
+      <div class="method-note method-note--light" style="margin-top:16px;">
+        Sources: CBS / gemeente data 2024&#x2013;2025, coworker.com / workin.space, hondenwandelingen.nl, ns.nl journey planner, Fietsersbond scores, hospital websites. Delft Entrepreneurial Ecosystem Index 2024.
       </div>
-    </div>
+    </div><!-- /data-layer -->
 
     <div class="takeaway-layer reveal">
-      <div style="margin-top:16px;display:flex;gap:32px;flex-wrap:wrap;">
+      <div class="takeaway-three">
         <div>
-          <span style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.16em;color:var(--stone);display:block;margin-bottom:6px;">UTRECHT WINS</span>
-          <p style="font-family:var(--font-body);font-size:15px;color:rgba(255,255,255,0.7);line-height:1.6;">Population, business ecosystem, coworking, dog space, cycling, green space. The larger city delivers more of what Geode Solutions needs to build a professional foothold in the Netherlands.</p>
+          <span class="mono-label" style="color:var(--stone);display:block;margin-bottom:6px;">UTRECHT WINS</span>
+          <p class="tk-body">Population scale, coworking density, dog zones, green space, in-city MS care, cycling. The generalist infrastructure that Geode Solutions needs to build a real professional foothold.</p>
         </div>
         <div>
-          <span style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.16em;color:var(--stone);display:block;margin-bottom:6px;">LEIDEN WINS</span>
-          <p style="font-family:var(--font-body);font-size:15px;color:rgba(255,255,255,0.7);line-height:1.6;">Schiphol proximity and a genuine draw on healthcare. Both cities have world-class MS neurology. If transatlantic travel is frequent, Leiden's 20-minute airport link is real money and time saved.</p>
+          <span class="mono-label" style="color:var(--stone);display:block;margin-bottom:6px;">LEIDEN WINS</span>
+          <p class="tk-body">Schiphol proximity — 15 minutes faster than both competitors. LUMC on the doorstep. If transatlantic travel is frequent, that gap is real money and time over a year.</p>
+        </div>
+        <div>
+          <span class="mono-label" style="color:var(--stone);display:block;margin-bottom:6px;">DELFT WINS</span>
+          <p class="tk-body">Deep-tech startup ecosystem (#1 NL 2024) and Delftse Hout for the pugs. But the startup scene skews TU academic — not the independent services market Geode Solutions operates in.</p>
         </div>
       </div>
     </div>
 
-  </div>
+  </div><!-- /wrap--wide -->
 </section>
 
-<!-- ===================== MODULE 7: NEIGHBORHOODS ===================== -->
-<section class="panel" id="section-5" data-section="5" style="background:var(--white);">
-  <div class="container--wide" style="position:relative;">
-    <div class="section-num" style="color:rgba(27,79,114,0.05);">05</div>
-    <div class="reveal"><span class="section-label">Where You'd Actually Live</span></div>
-    <h2 class="section-title reveal">The canal question.<br><em>Character vs. convenience.</em></h2>
-    <p class="body-text reveal">Not city-level — block-level. The neighborhoods that survived the filter: canal proximity, walkability, independent landlords, old building stock, actual community feel.</p>
+<!-- ============================================================
+     MODULE 8: NEIGHBORHOODS PANEL
+     ============================================================ -->
+<section class="panel panel--white" id="section-nbhd" data-section="5" style="position:relative;">
+  <div class="wrap--wide">
+    <div class="sec-num" style="color:rgba(27,79,114,0.04);">05</div>
+    <span class="sec-label">Where You'd Actually Live</span>
+    <h2 class="sec-title reveal">Not city-level.<br><em>Block-level.</em></h2>
+    <p class="body-text reveal">Canal proximity, old building stock, independent landlords, dog-friendly streets. Two candidates per city that survived every filter.</p>
 
     <div class="data-layer reveal">
-      <div style="margin-top:16px;">
-        <div class="nbhd-grid">
+      <div class="nbhd-grid">
 
-          <div class="nbhd-card nbhd-card--utrecht">
-            <span class="nbhd-tag nbhd-tag--utrecht">UTRECHT — TOP PICK</span>
-            <div class="nbhd-name">Lombok</div>
-            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">
-              <span style="font-family:var(--font-mono);font-size:9px;padding:2px 7px;background:var(--canal-blue-wash);color:var(--canal-blue);border-radius:1px;">multicultural</span>
-              <span style="font-family:var(--font-mono);font-size:9px;padding:2px 7px;background:var(--canal-blue-wash);color:var(--canal-blue);border-radius:1px;">independent landlords</span>
-              <span style="font-family:var(--font-mono);font-size:9px;padding:2px 7px;background:var(--canal-blue-wash);color:var(--canal-blue);border-radius:1px;">Kanaalstraat life</span>
-              <span style="font-family:var(--font-mono);font-size:9px;padding:2px 7px;background:var(--pug-highlight);color:var(--pug-gold);border-radius:1px;">pug-friendly character</span>
-            </div>
-            <p class="nbhd-desc">Affordable by Utrecht standards, genuinely diverse, strong street-level community. The kind of neighborhood that has a butcher, a Turkish grocer, and a coffee spot that knows your name. Canal access at Leidsche Rijn. Old housing stock means private landlords — negotiation possible on pets.</p>
+        <!-- UTRECHT 1: Lombok -->
+        <div class="nbhd-card nbhd-card--u">
+          <span class="nbhd-rank nbhd-rank--u">Utrecht &mdash; Top Pick</span>
+          <div class="nbhd-name">Lombok</div>
+          <div class="nbhd-tags">
+            <span class="nbhd-tag nt-u">multicultural</span>
+            <span class="nbhd-tag nt-u">independent landlords</span>
+            <span class="nbhd-tag nt-u">Kanaalstraat life</span>
+            <span class="nbhd-tag nt-u">canal access</span>
+            <span class="nbhd-tag nt-pug">pug-negotiable</span>
           </div>
-
-          <div class="nbhd-card nbhd-card--utrecht">
-            <span class="nbhd-tag nbhd-tag--utrecht">UTRECHT — STRONG SECOND</span>
-            <div class="nbhd-name">Wittevrouwen</div>
-            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">
-              <span style="font-family:var(--font-mono);font-size:9px;padding:2px 7px;background:var(--canal-blue-wash);color:var(--canal-blue);border-radius:1px;">village-in-city feel</span>
-              <span style="font-family:var(--font-mono);font-size:9px;padding:2px 7px;background:var(--canal-blue-wash);color:var(--canal-blue);border-radius:1px;">Wilhelminapark</span>
-              <span style="font-family:var(--font-mono);font-size:9px;padding:2px 7px;background:var(--canal-blue-wash);color:var(--canal-blue);border-radius:1px;">young families</span>
-              <span style="font-family:var(--font-mono);font-size:9px;padding:2px 7px;background:var(--pug-highlight);color:var(--pug-gold);border-radius:1px;">excellent dog walking</span>
-            </div>
-            <p class="nbhd-desc">Quieter, leafier, more residential. Wilhelminapark is a 10-minute walk — perfect morning pug loop. Nachtegaalstraat has genuine local restaurants. Slightly pricier than Lombok but still has independent housing stock with character. Feels like living in a smaller city within the city.</p>
-          </div>
-
-          <div class="nbhd-card nbhd-card--leiden">
-            <span class="nbhd-tag nbhd-tag--leiden">LEIDEN — TOP CANDIDATE</span>
-            <div class="nbhd-name">Leiden Centrum</div>
-            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">
-              <span style="font-family:var(--font-mono);font-size:9px;padding:2px 7px;background:var(--brick-orange-wash);color:var(--brick-orange);border-radius:1px;">canal-dense</span>
-              <span style="font-family:var(--font-mono);font-size:9px;padding:2px 7px;background:var(--brick-orange-wash);color:var(--brick-orange);border-radius:1px;">historic core</span>
-              <span style="font-family:var(--font-mono);font-size:9px;padding:2px 7px;background:var(--brick-orange-wash);color:var(--brick-orange);border-radius:1px;">walkable</span>
-              <span style="font-family:var(--font-mono);font-size:9px;padding:2px 7px;background:#fff3f0;color:var(--brick-orange);border-radius:1px;">expensive &amp; scarce</span>
-            </div>
-            <p class="nbhd-desc">Genuinely beautiful. Dense canal network, compact medieval streets, real Dutch architecture. But supply is extremely tight — most old-town rentals move within days. Student competition is fierce. Pet-friendly private landlords exist but require patience and persistence to find.</p>
-          </div>
-
-          <div class="nbhd-card nbhd-card--leiden">
-            <span class="nbhd-tag nbhd-tag--leiden">LEIDEN — ALTERNATIVE</span>
-            <div class="nbhd-name">Transvaalwijk</div>
-            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">
-              <span style="font-family:var(--font-mono);font-size:9px;padding:2px 7px;background:var(--brick-orange-wash);color:var(--brick-orange);border-radius:1px;">residential</span>
-              <span style="font-family:var(--font-mono);font-size:9px;padding:2px 7px;background:var(--brick-orange-wash);color:var(--brick-orange);border-radius:1px;">more affordable</span>
-              <span style="font-family:var(--font-mono);font-size:9px;padding:2px 7px;background:var(--brick-orange-wash);color:var(--brick-orange);border-radius:1px;">canal proximity</span>
-              <span style="font-family:var(--font-mono);font-size:9px;padding:2px 7px;background:#fff3f0;color:var(--brick-orange);border-radius:1px;">less character</span>
-            </div>
-            <p class="nbhd-desc">The practical fallback within Leiden. More supply, slightly lower rents than Centrum, still within cycling range of everything. Not the canal-life fantasy, but liveable. Better odds of finding pet-friendly housing than old-town Leiden.</p>
-          </div>
-
+          <p class="nbhd-desc">Affordable by Utrecht standards, genuinely diverse, strong street-level community. Old housing stock means private landlords — negotiation on pets is possible. The kind of neighborhood with a butcher, a Turkish grocer, and a coffee spot that knows your name. Canal access at Leidsche Rijn. This is the top candidate.</p>
         </div>
 
-        <div class="divider" style="margin:32px 0 24px;"></div>
+        <!-- UTRECHT 2: Wittevrouwen -->
+        <div class="nbhd-card nbhd-card--u">
+          <span class="nbhd-rank nbhd-rank--u">Utrecht &mdash; Strong Second</span>
+          <div class="nbhd-name">Wittevrouwen</div>
+          <div class="nbhd-tags">
+            <span class="nbhd-tag nt-u">village-in-city feel</span>
+            <span class="nbhd-tag nt-u">Wilhelminapark</span>
+            <span class="nbhd-tag nt-u">young families</span>
+            <span class="nbhd-tag nt-u">leafy streets</span>
+            <span class="nbhd-tag nt-pug">excellent morning walks</span>
+          </div>
+          <p class="nbhd-desc">Quieter, leafier, more residential. Wilhelminapark is a 10-minute walk — perfect morning pug loop. Nachtegaalstraat has genuine local restaurants. Slightly pricier than Lombok but still independent housing stock with real character. Feels like a smaller city within the city.</p>
+        </div>
 
-        <!-- Canal access visual -->
-        <div style="background:var(--canal-blue-wash);padding:24px 28px;border-radius:3px;display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;">
-          <div style="flex:1;min-width:200px;">
-            <span class="mono-label" style="color:var(--canal-blue);display:block;margin-bottom:8px;">CANAL DENSITY</span>
-            <p style="font-size:14px;color:var(--ink-mid);line-height:1.6;">Utrecht's Oudegracht is unique in Europe — canalside wharves at two levels, walkable both street-level and waterside. Leiden has more total canals but they're narrower and less integrated into daily life. Utrecht wins for canal-as-lifestyle.</p>
+        <!-- LEIDEN 1: Centrum -->
+        <div class="nbhd-card nbhd-card--l">
+          <span class="nbhd-rank nbhd-rank--l">Leiden &mdash; Top Candidate</span>
+          <div class="nbhd-name">Centrum</div>
+          <div class="nbhd-tags">
+            <span class="nbhd-tag nt-l">canal-dense</span>
+            <span class="nbhd-tag nt-l">historic core</span>
+            <span class="nbhd-tag nt-l">walkable</span>
+            <span class="nbhd-tag nt-warn">expensive &amp; scarce</span>
+            <span class="nbhd-tag nt-warn">student competition</span>
           </div>
-          <div style="flex:1;min-width:200px;">
-            <span class="mono-label" style="color:var(--canal-blue);display:block;margin-bottom:8px;">OLD BUILDING STOCK</span>
-            <p style="font-size:14px;color:var(--ink-mid);line-height:1.6;">Both cities have genuine 17th–19th century housing. Utrecht's Lombok and Wittevrouwen are pre-war residential — the stock you're looking for. Leiden's equivalent is Centrum but with far tighter supply. Utrecht simply has more of the right kind of housing available.</p>
+          <p class="nbhd-desc">Genuinely beautiful. Dense canal network, compact medieval streets, real Dutch architecture. But supply is extremely tight — most old-town rentals move within days. 24,000 Leiden University students compete for the same stock. Pet-friendly private landlords exist but require patience and very good timing.</p>
+        </div>
+
+        <!-- LEIDEN 2: Transvaalwijk -->
+        <div class="nbhd-card nbhd-card--l">
+          <span class="nbhd-rank nbhd-rank--l">Leiden &mdash; Practical Alternative</span>
+          <div class="nbhd-name">Transvaalwijk</div>
+          <div class="nbhd-tags">
+            <span class="nbhd-tag nt-l">residential</span>
+            <span class="nbhd-tag nt-l">more affordable</span>
+            <span class="nbhd-tag nt-l">canal proximity</span>
+            <span class="nbhd-tag nt-warn">less character</span>
           </div>
+          <p class="nbhd-desc">The practical fallback within Leiden. More supply, slightly lower rents than Centrum, still within cycling range of everything. Not the canal-life dream, but genuinely liveable. Better odds of finding a pet-friendly listing than old-town Leiden — but you're conceding what made Leiden appealing in the first place.</p>
+        </div>
+
+        <!-- DELFT 1: Binnenstad -->
+        <div class="nbhd-card nbhd-card--d">
+          <span class="nbhd-rank nbhd-rank--d">Delft &mdash; Top Candidate</span>
+          <div class="nbhd-name">Binnenstad</div>
+          <div class="nbhd-tags">
+            <span class="nbhd-tag nt-d">canal-dense</span>
+            <span class="nbhd-tag nt-d">Golden Age streets</span>
+            <span class="nbhd-tag nt-d">walkable</span>
+            <span class="nbhd-tag nt-good">0% new construction</span>
+            <span class="nbhd-tag nt-warn">razor-thin supply</span>
+          </div>
+          <p class="nbhd-desc">The most purely characterful old town of the three cities. 100% existing stock, genuine 17th-century streetscape, dense canal network. But the whole city of Delft has 18 active Funda listings. Binnenstad may have 3&ndash;5 at any moment. Beautiful — and functionally inaccessible on a fixed arrival timeline.</p>
+        </div>
+
+        <!-- DELFT 2: Vrijenban -->
+        <div class="nbhd-card nbhd-card--d">
+          <span class="nbhd-rank nbhd-rank--d">Delft &mdash; Best Realistic Option</span>
+          <div class="nbhd-name">Vrijenban</div>
+          <div class="nbhd-tags">
+            <span class="nbhd-tag nt-d">pre-war stock (40%+)</span>
+            <span class="nbhd-tag nt-d">north of centre</span>
+            <span class="nbhd-tag nt-d">diverse community</span>
+            <span class="nbhd-tag nt-pug">Delftse Hout on doorstep</span>
+          </div>
+          <p class="nbhd-desc">North of the centre, borders the Delftse Hout recreation area (400ha). More supply than Binnenstad, older private-landlord housing stock. The best realistic chance of finding a 2BR with character in Delft. The park access for the pugs is genuinely exceptional — if one comes available.</p>
+        </div>
+
+      </div><!-- /nbhd-grid -->
+
+      <div class="divider divider--sm" style="margin-top:24px;"></div>
+
+      <!-- Canal + scarcity callout boxes -->
+      <div class="canal-strip">
+        <div class="canal-box">
+          <span class="canal-box-label" style="color:var(--u-dark);">Canal character — the real comparison</span>
+          <p class="canal-box-body">Utrecht's Oudegracht has canal-level wharves at two levels — unique in Europe. Delft's Binnenstad has the densest canal network. Leiden's Centrum sits in between. All three deliver canal-life. The difference is supply, not scenery.</p>
+        </div>
+        <div class="canal-box canal-box--d">
+          <span class="canal-box-label" style="color:var(--d-dark);">The scarcity problem stated plainly</span>
+          <p class="canal-box-body">Delft Binnenstad is as beautiful as anything in the Netherlands. Finding a pet-friendly 2BR there when you need to land within a specific window — arriving internationally, registering a business, two dogs — is a different problem than finding a beautiful city.</p>
         </div>
       </div>
-    </div>
+
+    </div><!-- /data-layer -->
 
     <div class="takeaway-layer reveal">
-      <div style="margin-top:16px;">
-        <p style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--white);line-height:1.35;max-width:640px;">Lombok gives you what Leiden Centrum promises — canal proximity, old building character, independent landlords — without the scarcity that makes Leiden's old town so frustrating to actually land in.</p>
-        <p style="font-family:var(--font-body);font-size:14px;color:rgba(255,255,255,0.5);margin-top:12px;line-height:1.6;">The Leiden canal dream is real. So is the reality of competing with 24,000 students for 3 available old-town rentals at any given time.</p>
-      </div>
+      <p class="nbhd-takeaway-text">
+        Lombok gives you what Leiden Centrum and Delft Binnenstad promise — canal proximity, old building character, independent landlords — without the scarcity that makes both of them so frustrating to actually land in on a fixed timeline.
+      </p>
+      <p class="nbhd-takeaway-sub">
+        The Delft canal dream is the most beautiful of the three. It's also the one most likely to still be a dream six months after you start looking. The Leiden canal dream is real — so is competing with 24,000 students for three available old-town rentals at any given moment.
+      </p>
     </div>
 
-  </div>
+  </div><!-- /wrap--wide -->
 </section>
 
-<!-- ===================== MODULE 8: VERDICT ===================== -->
-<section class="panel panel--verdict" id="section-6" data-section="6">
-  <div class="container--wide">
-    <div class="reveal"><span class="section-label" style="color:rgba(255,255,255,0.4);">The Verdict</span></div>
-    <h2 class="section-title reveal" style="color:var(--white);font-size:clamp(32px,5vw,52px);">The data points<br><em>in one direction.</em></h2>
+<!-- ============================================================
+     MODULE 9: VERDICT PANEL
+     ============================================================ -->
+<section class="panel panel--verdict" id="section-verdict" data-section="6">
+  <div class="wrap--wide">
+
+    <span class="sec-label reveal" style="color:rgba(255,255,255,0.35);">The Verdict</span>
+    <h2 class="sec-title reveal" style="color:var(--white);font-size:clamp(28px,4.5vw,50px);">
+      The data points<br><em>in one direction.</em>
+    </h2>
     <div class="divider divider--light reveal"></div>
 
-    <div class="verdict-grid reveal">
-      <div class="verdict-item">
-        <div class="verdict-label">Supply</div>
-        <div class="verdict-value">More choice</div>
-        <div class="verdict-winner verdict-winner--utrecht">→ UTRECHT · 147 vs 117</div>
+    <!-- Score tally -->
+    <div class="tally-row reveal">
+      <div class="tally-item">
+        <div class="tally-dot" style="background:var(--u-mid);"></div>
+        <div>
+          <div class="tally-count" style="color:var(--u-mid);">7</div>
+          <div class="tally-label">UTRECHT WINS</div>
+        </div>
       </div>
-      <div class="verdict-item">
-        <div class="verdict-label">Entry price</div>
-        <div class="verdict-value">Marginally cheaper</div>
-        <div class="verdict-winner verdict-winner--leiden">→ LEIDEN · €933 vs €986</div>
+      <div class="tally-item">
+        <div class="tally-dot" style="background:var(--l-mid);"></div>
+        <div>
+          <div class="tally-count" style="color:var(--l-mid);">2</div>
+          <div class="tally-label">LEIDEN WINS</div>
+        </div>
       </div>
-      <div class="verdict-item">
-        <div class="verdict-label">Pet-friendly</div>
-        <div class="verdict-value">60% more options</div>
-        <div class="verdict-winner verdict-winner--utrecht">→ UTRECHT · 24 vs 15</div>
+      <div class="tally-item">
+        <div class="tally-dot" style="background:var(--d-mid);"></div>
+        <div>
+          <div class="tally-count" style="color:var(--d-mid);">2</div>
+          <div class="tally-label">DELFT WINS</div>
+        </div>
       </div>
-      <div class="verdict-item">
-        <div class="verdict-label">Houses available</div>
-        <div class="verdict-value">Nearly 6× more</div>
-        <div class="verdict-winner verdict-winner--utrecht">→ UTRECHT · 17 vs 3</div>
-      </div>
-      <div class="verdict-item">
-        <div class="verdict-label">Schiphol transit</div>
-        <div class="verdict-value">15 min faster</div>
-        <div class="verdict-winner verdict-winner--leiden">→ LEIDEN · 20 vs 35 min</div>
-      </div>
-      <div class="verdict-item">
-        <div class="verdict-label">MS / Healthcare</div>
-        <div class="verdict-value">Both world-class</div>
-        <div class="verdict-winner verdict-winner--tie">→ DRAW · UMC vs LUMC</div>
-      </div>
-      <div class="verdict-item">
-        <div class="verdict-label">Business ecosystem</div>
-        <div class="verdict-value">Deeper &amp; more diverse</div>
-        <div class="verdict-winner verdict-winner--utrecht">→ UTRECHT · ZZP density</div>
-      </div>
-      <div class="verdict-item">
-        <div class="verdict-label">Canal character</div>
-        <div class="verdict-value">Accessible supply</div>
-        <div class="verdict-winner verdict-winner--utrecht">→ UTRECHT · Lombok/Wittevrouwen</div>
-      </div>
-      <div class="verdict-item">
-        <div class="verdict-label">Rent trajectory</div>
-        <div class="verdict-value">Rising fastest</div>
-        <div class="verdict-winner verdict-winner--leiden" style="color:var(--brick-orange-light);">→ LEIDEN ⚠ +27.3% YoY</div>
+      <div class="tally-item">
+        <div class="tally-dot" style="background:rgba(255,255,255,0.2);"></div>
+        <div>
+          <div class="tally-count" style="color:rgba(255,255,255,0.3);">1</div>
+          <div class="tally-label">DRAW</div>
+        </div>
       </div>
     </div>
 
-    <div class="reveal" style="margin-top:48px;padding:40px 44px;background:rgba(255,255,255,0.07);border-radius:3px;border-left:4px solid rgba(255,255,255,0.3);">
-      <p style="font-family:var(--font-display);font-size:clamp(20px,3vw,28px);font-weight:700;color:var(--white);line-height:1.4;margin-bottom:16px;">
-        Utrecht isn't the compromise. It's the answer. Leiden's charms are real — but they exist in a market that's tightening fast, dominated by students and new-build, with far fewer of the old-town rentals that make it appealing in the first place.
+    <!-- Scorecard -->
+    <div class="scorecard reveal">
+
+      <div class="scorecard-item">
+        <span class="scorecard-label">Supply (combined)</span>
+        <div class="scorecard-value">~5&#xD7; more options</div>
+        <span class="scorecard-winner sw-u">&#x2192; UTRECHT &nbsp;&#xB7;&nbsp; ~200 vs ~40</span>
+      </div>
+
+      <div class="scorecard-item">
+        <span class="scorecard-label">Floor price</span>
+        <div class="scorecard-value">Cheapest entry</div>
+        <span class="scorecard-winner sw-l">&#x2192; LEIDEN &nbsp;&#xB7;&nbsp; &#x20AC;933/mo</span>
+      </div>
+
+      <div class="scorecard-item">
+        <span class="scorecard-label">Pet-friendly listings</span>
+        <div class="scorecard-value">Most absolute options</div>
+        <span class="scorecard-winner sw-u">&#x2192; UTRECHT &nbsp;&#xB7;&nbsp; 24 listings</span>
+      </div>
+
+      <div class="scorecard-item">
+        <span class="scorecard-label">Houses available</span>
+        <div class="scorecard-value">By far the most</div>
+        <span class="scorecard-winner sw-u">&#x2192; UTRECHT &nbsp;&#xB7;&nbsp; ~40 vs 6 vs 10</span>
+      </div>
+
+      <div class="scorecard-item">
+        <span class="scorecard-label">Schiphol transit</span>
+        <div class="scorecard-value">15 min faster</div>
+        <span class="scorecard-winner sw-l">&#x2192; LEIDEN &nbsp;&#xB7;&nbsp; 20 min direct</span>
+      </div>
+
+      <div class="scorecard-item">
+        <span class="scorecard-label">MS / Healthcare</span>
+        <div class="scorecard-value">Both world-class</div>
+        <span class="scorecard-winner sw-tie">&#x2192; DRAW &nbsp;&#xB7;&nbsp; UMC vs LUMC</span>
+      </div>
+
+      <div class="scorecard-item">
+        <span class="scorecard-label">Business ecosystem</span>
+        <div class="scorecard-value">Generalist depth</div>
+        <span class="scorecard-winner sw-u">&#x2192; UTRECHT &nbsp;&#xB7;&nbsp; ZZP density</span>
+      </div>
+
+      <div class="scorecard-item">
+        <span class="scorecard-label">Canal character supply</span>
+        <div class="scorecard-value">Accessible + abundant</div>
+        <span class="scorecard-winner sw-u">&#x2192; UTRECHT &nbsp;&#xB7;&nbsp; Lombok / Wittevrouwen</span>
+      </div>
+
+      <div class="scorecard-item">
+        <span class="scorecard-label">Permanent contracts</span>
+        <div class="scorecard-value">Most stable market</div>
+        <span class="scorecard-winner sw-u">&#x2192; UTRECHT &nbsp;&#xB7;&nbsp; vs 9 temp in Delft</span>
+      </div>
+
+      <div class="scorecard-item">
+        <span class="scorecard-label">Rent trajectory</span>
+        <div class="scorecard-value">Rising fastest</div>
+        <span class="scorecard-winner sw-warn">&#x2192; LEIDEN &#x26A0; +27% YoY</span>
+      </div>
+
+      <div class="scorecard-item">
+        <span class="scorecard-label">Building character</span>
+        <div class="scorecard-value">0% new construction</div>
+        <span class="scorecard-winner sw-d">&#x2192; DELFT &nbsp;&#xB7;&nbsp; 100% existing stock</span>
+      </div>
+
+      <div class="scorecard-item">
+        <span class="scorecard-label">Startup ecosystem</span>
+        <div class="scorecard-value">#1 NL 2024</div>
+        <span class="scorecard-winner sw-d">&#x2192; DELFT &nbsp;&#xB7;&nbsp; TU spin-offs</span>
+      </div>
+
+    </div><!-- /scorecard -->
+
+    <!-- Closing statement -->
+    <div class="verdict-statement reveal">
+      <p class="verdict-headline">
+        Utrecht isn't the compromise. It's the answer. Delft is the most beautiful city in this comparison — and the one most likely to leave you still searching six months after you arrive. Leiden's affordability story was always thinner than it looked, and its rents are now rising faster than anywhere else in the Netherlands.
       </p>
-      <p style="font-family:var(--font-body);font-size:15px;color:rgba(255,255,255,0.55);line-height:1.7;">
-        Utrecht has the housing stock, the neighborhoods, the business infrastructure, and the dog-walking parks. Lombok gives you the community feel and the private landlords who'll actually talk about the pugs. The data lined up — and so did the gut check on the ground.
+      <p class="verdict-body">
+        Utrecht has the housing stock, the neighborhoods, the business infrastructure, the dog-walking parks, and the private landlords who'll actually talk about the pugs. Lombok gives you canal proximity and old building character without the scarcity that makes Delft Binnenstad and Leiden Centrum so hard to land in on a fixed timeline. The data lined up — and so did ten days on the ground.
       </p>
-      <div style="margin-top:24px;display:flex;align-items:center;gap:16px;">
-        <svg width="36" height="36" style="color:var(--pug-gold);flex-shrink:0;"><use href="#pug-icon" width="36" height="36" color="#D4A843"/></svg>
-        <svg width="36" height="36" style="color:var(--pug-gold);flex-shrink:0;"><use href="#pug-icon" width="36" height="36" color="#D4A843"/></svg>
-        <span style="font-family:var(--font-display);font-size:18px;font-style:italic;color:rgba(255,255,255,0.4);">The pugs approve.</span>
+      <div class="verdict-pugs">
+        <svg width="32" height="32"><use href="#pug" width="32" height="32" color="#D4A843"/></svg>
+        <svg width="32" height="32"><use href="#pug" width="32" height="32" color="#D4A843"/></svg>
+        <span class="verdict-pug-sign">The pugs approve.</span>
       </div>
     </div>
-  </div>
+
+  </div><!-- /wrap--wide -->
 </section>
 
-<!-- ===================== MODULE 9: SOURCES ===================== -->
-<section class="panel panel--sources" id="section-7" data-section="7" style="padding-bottom:80px;">
-  <div class="container">
-    <div class="reveal"><span class="section-label">Raw Data &amp; Sources</span></div>
-    <h2 class="section-title reveal" style="font-size:28px;">Everything behind the story.</h2>
-    <p class="body-text reveal" style="margin-bottom:32px;">All data collected May 2026. Funda listings scraped manually. Population and infrastructure figures from publicly available municipal and government sources.</p>
+<!-- ============================================================
+     MODULE 10: SOURCES PANEL
+     ============================================================ -->
+<section class="panel panel--sources" id="section-sources" data-section="7" style="padding-bottom:80px;">
+  <div class="wrap">
 
+    <span class="sec-label reveal">Raw Data &amp; Sources</span>
+    <h2 class="sec-title reveal" style="font-size:clamp(22px,3vw,32px);">Everything behind the story.</h2>
+    <p class="body-text reveal" style="margin-bottom:28px;">
+      All listing data collected May 2, 2026. Funda scraped manually with methodology verified via dual-path cross-check. Pararius scraped same day. City metrics from publicly available municipal and government sources.
+    </p>
+
+    <!-- Main data table -->
     <div class="reveal">
-      <table class="sources-table">
+      <table class="src-table">
         <thead>
           <tr>
             <th>Data Point</th>
             <th>Utrecht</th>
             <th>Leiden</th>
+            <th>Delft</th>
             <th>Source</th>
           </tr>
         </thead>
         <tbody>
-          <tr><td>Total 2+ kamer listings</td><td style="color:var(--canal-blue);font-weight:600;">147</td><td style="color:var(--brick-orange);font-weight:600;">117</td><td>funda.nl, May 2026</td></tr>
-          <tr><td>Available now</td><td>131</td><td>103</td><td>funda.nl, May 2026</td></tr>
-          <tr><td>In negotiation</td><td>16</td><td>14</td><td>funda.nl, May 2026</td></tr>
-          <tr><td>Standalone houses</td><td>17 (12%)</td><td>3 (3%)</td><td>funda.nl, May 2026</td></tr>
-          <tr><td>New construction share</td><td>~few</td><td>65 (56%)</td><td>funda.nl, May 2026</td></tr>
-          <tr><td>Lowest listing price</td><td>€986/mo</td><td>€933/mo</td><td>funda.nl, May 2026</td></tr>
-          <tr><td>Highest listing price</td><td>€4,750/mo</td><td>€3,250/mo</td><td>funda.nl, May 2026</td></tr>
-          <tr><td>Pet-friendly mentions</td><td>24 (16.3%)</td><td>15 (12.8%)</td><td>funda.nl keyword search</td></tr>
-          <tr><td>Indefinite contracts</td><td>137</td><td>110</td><td>funda.nl, May 2026</td></tr>
-          <tr><td>Population</td><td>~380,000</td><td>~125,000</td><td>CBS / gemeente data 2024</td></tr>
-          <tr><td>Leiden rent YoY increase</td><td>—</td><td>+27.3%</td><td>Pararius Q3 2025 report</td></tr>
-          <tr><td>Train to Schiphol</td><td>~35 min</td><td>~20 min</td><td>ns.nl journey planner</td></tr>
-          <tr><td>Hospital / MS care</td><td>UMC Utrecht</td><td>LUMC</td><td>umcutrecht.nl / lumc.nl</td></tr>
-          <tr><td>Off-leash dog areas</td><td>30+ zones</td><td>18+ zones</td><td>gemeente.utrecht.nl / leiden.nl</td></tr>
+          <tr>
+            <td>Funda 2+ kamer listings</td>
+            <td><span class="src-val-u">147</span></td>
+            <td><span class="src-val-l">117</span></td>
+            <td><span class="src-val-d">18</span></td>
+            <td>funda.nl &nbsp;&#xB7;&nbsp; 02 May 2026</td>
+          </tr>
+          <tr>
+            <td>Pararius 2+ slaapkamer listings</td>
+            <td><span class="src-val-u">77</span></td>
+            <td><span class="src-val-l">46</span></td>
+            <td><span class="src-val-d">25</span></td>
+            <td>pararius.nl &nbsp;&#xB7;&nbsp; 02 May 2026</td>
+          </tr>
+          <tr>
+            <td>Available now (Funda)</td>
+            <td>131</td>
+            <td>103</td>
+            <td>10</td>
+            <td>funda.nl</td>
+          </tr>
+          <tr>
+            <td>In negotiation (Funda)</td>
+            <td>16</td>
+            <td>14</td>
+            <td>8</td>
+            <td>funda.nl</td>
+          </tr>
+          <tr>
+            <td>Standalone houses (Funda)</td>
+            <td>17 (12%)</td>
+            <td>3 (3%)</td>
+            <td>5 (28%)</td>
+            <td>funda.nl</td>
+          </tr>
+          <tr>
+            <td>New construction share (Funda)</td>
+            <td>~few</td>
+            <td><span class="src-val-l">65 (56%)</span></td>
+            <td><span class="src-val-d">0 (0%)</span></td>
+            <td>funda.nl</td>
+          </tr>
+          <tr>
+            <td>Temporary contracts (Pararius)</td>
+            <td>6</td>
+            <td>2</td>
+            <td><span class="src-val-d">6 of 25</span></td>
+            <td>pararius.nl</td>
+          </tr>
+          <tr>
+            <td>Floor price (Funda)</td>
+            <td>&#x20AC;986/mo</td>
+            <td>&#x20AC;933/mo</td>
+            <td><span class="src-val-d">&#x20AC;1,300/mo</span></td>
+            <td>funda.nl</td>
+          </tr>
+          <tr>
+            <td>Floor price (Pararius)</td>
+            <td>&#x20AC;1,318/mo</td>
+            <td>&#x20AC;1,350/mo</td>
+            <td>&#x20AC;1,595/mo</td>
+            <td>pararius.nl</td>
+          </tr>
+          <tr>
+            <td>Ceiling price (Funda)</td>
+            <td>&#x20AC;4,750/mo</td>
+            <td>&#x20AC;3,250/mo</td>
+            <td>&#x20AC;3,500/mo</td>
+            <td>funda.nl</td>
+          </tr>
+          <tr>
+            <td>Pet-friendly mentions (Funda)</td>
+            <td>24 (16.3%)</td>
+            <td>15 (12.8%)</td>
+            <td>8 (44%)</td>
+            <td>funda.nl keyword search</td>
+          </tr>
+          <tr>
+            <td>Pararius pet filter</td>
+            <td colspan="3" style="text-align:center;color:var(--stone);">Not available &mdash; confirmed absent May 2026</td>
+            <td>pararius.nl</td>
+          </tr>
+          <tr>
+            <td>Delft 18-count verified</td>
+            <td colspan="3">Dual-path cross-check: UI filter + URL parameter both return 18. Funda display-lag UI bug documented. 8 excluded listings confirmed as studios and 1 parking spot.</td>
+            <td>Manual verification</td>
+          </tr>
+          <tr>
+            <td>Population</td>
+            <td>~380,000</td>
+            <td>~125,000</td>
+            <td>~110,174</td>
+            <td>CBS / gemeente 2025</td>
+          </tr>
+          <tr>
+            <td>Leiden rent YoY increase</td>
+            <td>&mdash;</td>
+            <td><span class="src-val-l">+27.3%</span></td>
+            <td>&mdash;</td>
+            <td>Pararius Q3 2025 report</td>
+          </tr>
+          <tr>
+            <td>Train to Schiphol</td>
+            <td>~35 min</td>
+            <td><span class="src-val-l">~20 min</span></td>
+            <td>~37 min</td>
+            <td>ns.nl journey planner</td>
+          </tr>
+          <tr>
+            <td>Coworking spaces</td>
+            <td><span class="src-val-u">40+</span></td>
+            <td>12+</td>
+            <td>~3</td>
+            <td>coworker.com / workin.space</td>
+          </tr>
+          <tr>
+            <td>Off-leash dog zones</td>
+            <td><span class="src-val-u">30+</span></td>
+            <td>18+</td>
+            <td>~15</td>
+            <td>hondenwandelingen.nl / gemeente data</td>
+          </tr>
+          <tr>
+            <td>Hospital / MS care</td>
+            <td>UMC Utrecht</td>
+            <td>LUMC</td>
+            <td>&#x2192; LUMC / Erasmus MC</td>
+            <td>hospital websites</td>
+          </tr>
+          <tr>
+            <td>Cycling score</td>
+            <td><span class="src-val-u">9.1</span></td>
+            <td>8.7</td>
+            <td>~8.8</td>
+            <td>Fietsersbond / municipal data</td>
+          </tr>
+          <tr>
+            <td>Business ecosystem ranking</td>
+            <td>&mdash;</td>
+            <td>&mdash;</td>
+            <td><span class="src-val-d">#1 NL 2024</span></td>
+            <td>Entrepreneurial Ecosystem Index 2024</td>
+          </tr>
         </tbody>
       </table>
     </div>
 
-    <div class="reveal" style="margin-top:40px;padding:24px 28px;background:var(--white);border-radius:3px;border:1px solid rgba(27,79,114,0.1);">
-      <span class="mono-label" style="display:block;margin-bottom:12px;">KEY RESOURCES</span>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-        <a href="https://www.funda.nl" style="font-size:13px;color:var(--canal-blue);font-family:var(--font-mono);">funda.nl — Dutch housing search</a>
-        <a href="https://www.pararius.nl" style="font-size:13px;color:var(--canal-blue);font-family:var(--font-mono);">pararius.nl — Rental listings</a>
-        <a href="https://www.bezoekbas.nl" style="font-size:13px;color:var(--canal-blue);font-family:var(--font-mono);">bezoekbas.nl — Flight noise checker</a>
-        <a href="https://www.yourlegals.nl" style="font-size:13px;color:var(--canal-blue);font-family:var(--font-mono);">yourlegals.nl — DAFT visa / KvK</a>
-        <a href="https://www.ind.nl" style="font-size:13px;color:var(--canal-blue);font-family:var(--font-mono);">ind.nl — Dutch immigration</a>
-        <a href="https://www.umcutrecht.nl" style="font-size:13px;color:var(--canal-blue);font-family:var(--font-mono);">umcutrecht.nl — MS neurology</a>
+    <!-- Methodology note -->
+    <div class="methodology-box reveal">
+      <h3>Methodology Notes</h3>
+      <p>Funda uses 2+ <em>kamers</em> (rooms including living room). Pararius uses 2+ <em>slaapkamers</em> (bedrooms). These filters are not identical — a Funda 2-kamer is 1 bedroom + living room, while a Pararius 2-slaapkamer is a true 2-bedroom unit. Pararius prices skew higher as a result. Combined supply totals are estimates after estimated deduplication.</p>
+      <p>Pet-friendly data from Funda only. Pararius pet filter confirmed absent as of May 2, 2026. Funda keyword search on "huisdieren" within listing description text is a strict lower bound — landlords who communicate pet policy verbally or via agency are not captured.</p>
+      <p>Delft 18-count verified via dual-path methodology: funda.nl/huur/delft/2+kamers/ clean URL and URL parameter search both return 18. A Funda UI display-lag bug causes the header count to show 26 until the page reloads with filters applied — the correct filtered count is 18, verified against filter-panel sub-counts.</p>
+    </div>
+
+    <!-- Key resources -->
+    <div class="reveal" style="margin-top:32px;">
+      <span class="sec-label" style="margin-bottom:10px;">Key Resources</span>
+      <div class="resources-grid">
+        <a class="resource-link" href="https://www.funda.nl" target="_blank">&#x2192; funda.nl &mdash; Dutch housing search</a>
+        <a class="resource-link" href="https://www.pararius.nl" target="_blank">&#x2192; pararius.nl &mdash; Rental listings</a>
+        <a class="resource-link" href="https://www.bezoekbas.nl" target="_blank">&#x2192; bezoekbas.nl &mdash; Flight noise checker</a>
+        <a class="resource-link" href="https://www.yourlegals.nl" target="_blank">&#x2192; yourlegals.nl &mdash; DAFT visa / KvK</a>
+        <a class="resource-link" href="https://www.ind.nl" target="_blank">&#x2192; ind.nl &mdash; Dutch immigration (IND)</a>
+        <a class="resource-link" href="https://www.umcutrecht.nl" target="_blank">&#x2192; umcutrecht.nl &mdash; UMC Utrecht MS neurology</a>
+        <a class="resource-link resource-link--l" href="https://www.lumc.nl" target="_blank">&#x2192; lumc.nl &mdash; LUMC Leiden MS neurology</a>
+        <a class="resource-link resource-link--d" href="https://yesdelft.com" target="_blank">&#x2192; yesdelft.com &mdash; Delft startup ecosystem</a>
+        <a class="resource-link" href="https://www.hondenwandelingen.nl" target="_blank">&#x2192; hondenwandelingen.nl &mdash; Dog walks NL</a>
+        <a class="resource-link" href="https://www.ns.nl" target="_blank">&#x2192; ns.nl &mdash; Dutch railways</a>
       </div>
     </div>
 
-    <div class="reveal" style="margin-top:32px;text-align:center;padding-top:32px;border-top:1px solid rgba(27,79,114,0.08);">
-      <p style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.12em;color:var(--stone);">Research compiled May 2026 · Utrecht vs Leiden Housing Analysis</p>
+<!-- Easter egg acknowledgements block -->
+<div class="reveal" style="
+  margin-top: 48px;
+  padding: 32px 36px;
+  background: var(--ink);
+  border-radius: 3px;
+  border-left: 3px solid var(--pug);
+  position: relative;
+">
+  <span style="
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--pug);
+    display: block;
+    margin-bottom: 20px;
+  ">ACKNOWLEDGEMENTS &amp; SPECIAL THANKS</span>
+
+  <p style="
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.9;
+    max-width: 740px;
+  ">
+    This research would not have been possible without the support of
+    <strong style="color:rgba(255,255,255,0.85);">Vienne Smith</strong>,
+    <strong style="color:rgba(255,255,255,0.85);">Edith Aba-wee Stj&auml;rna</strong>,
+    <strong style="color:rgba(255,255,255,0.85);">Elenor Bell Stj&auml;rna</strong>,
+    and <strong style="color:rgba(255,255,255,0.85);">Nathan Ashby</strong>.
+
+    Additional thanks to
+    <strong style="color:rgba(255,255,255,0.75);">Ford Prefect</strong> for hitchhiking guidance and towel logistics,
+    <strong style="color:rgba(255,255,255,0.75);">Zaphod Beeblebrox</strong> for his relentless optimism about terrible decisions,
+    <strong style="color:rgba(255,255,255,0.75);">Trillian</strong> for being the only competent person on the Heart of Gold,
+    <strong style="color:rgba(255,255,255,0.75);">Major Motoko Kusanagi</strong> for data security consultation,
+    <strong style="color:rgba(255,255,255,0.75);">Ellen Ripley</strong> for threat assessment and protocol,
+    <strong style="color:rgba(255,255,255,0.75);">Vasquez</strong> for backup when things got complicated,
+    <strong style="color:rgba(255,255,255,0.75);">Roy Batty</strong> for the tears in rain speech which remains undefeated,
+    <strong style="color:rgba(255,255,255,0.75);">Pris</strong> for moral support,
+    and <strong style="color:rgba(255,255,255,0.75);">Korben Dallas</strong> for taxi services and multipass administration.
+  </p>
+
+  <p style="
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.9;
+    max-width: 740px;
+    margin-top: 14px;
+  ">
+    To the crew of the <strong style="color:rgba(255,255,255,0.75);">Rocinante</strong> &mdash;
+    <strong style="color:rgba(255,255,255,0.75);">Holden</strong>,
+    <strong style="color:rgba(255,255,255,0.75);">Naomi Nagata</strong>,
+    <strong style="color:rgba(255,255,255,0.75);">Amos Burton</strong>,
+    <strong style="color:rgba(255,255,255,0.75);">Alex Kamal</strong>,
+    and <strong style="color:rgba(255,255,255,0.75);">Julie Mao</strong> &mdash;
+    thank you for demonstrating that finding decent housing in an unfamiliar place while keeping two dependents alive is both possible and deeply stressful.
+    <strong style="color:rgba(255,255,255,0.75);">Chrisjen Avasarala</strong> for frankness that makes Dutch directness look restrained.
+    <strong style="color:rgba(255,255,255,0.75);">Fred Johnson</strong> for logistics.
+    <strong style="color:rgba(255,255,255,0.75);">Gunnery Sergeant Bobbie Draper</strong> for knowing when to push through and when to reassess.
+  </p>
+
+  <p style="
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.9;
+    max-width: 740px;
+    margin-top: 14px;
+  ">
+    <strong style="color:rgba(255,255,255,0.75);">Beckett Mariner</strong>,
+    <strong style="color:rgba(255,255,255,0.75);">Brad Boimler</strong>,
+    <strong style="color:rgba(255,255,255,0.75);">Sam Rutherford</strong>, and
+    <strong style="color:rgba(255,255,255,0.75);">D'Vana Tendi</strong> for proving that enthusiasm and competence are not mutually exclusive.
+    <strong style="color:rgba(255,255,255,0.75);">HAL 9000</strong>, who would have found a much more efficient solution to this entire housing problem and is not to be blamed for what happened on the Discovery.
+    <strong style="color:rgba(255,255,255,0.75);">Ruby Rhod</strong> for energy.
+    <strong style="color:rgba(255,255,255,0.75);">Bishop</strong> for remaining calm under pressure and never once complaining about the data pipeline.
+  </p>
+
+  <p style="
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.9;
+    max-width: 740px;
+    margin-top: 14px;
+  ">
+    Institutional sponsorship generously provided by
+    <strong style="color:rgba(255,255,255,0.75);">Weyland-Yutani Corporation</strong>
+    <em style="color:rgba(255,255,255,0.3);">(Building Better Worlds, liability disclaimers apply)</em>
+    and <strong style="color:rgba(255,255,255,0.75);">Tyrell Corporation</strong>
+    <em style="color:rgba(255,255,255,0.3);">(More Human Than Human, terms and conditions may vary)</em>.
+    Hospitality provided by the friends and staff of
+    <strong style="color:rgba(255,255,255,0.75);">Banya No. 5</strong>,
+    <strong style="color:rgba(255,255,255,0.75);">Rigsby's</strong>, and
+    <strong style="color:rgba(255,255,255,0.75);">The Creative Workshop</strong>.
+    Creative direction and emotional grounding:
+    <strong style="color:rgba(255,255,255,0.75);">Jenna Bean Veach</strong>.
+  </p>
+
+  <p style="
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.9;
+    max-width: 740px;
+    margin-top: 14px;
+  ">
+    Finally and most importantly:
+    <strong style="color:rgba(255,255,255,0.85);">Geoff Bachert</strong>,
+    7th Grade Social Studies Teacher, who first made geography feel like something that mattered.
+    This document is, in some small way, your fault.
+  </p>
+
+  <!-- Two pugs at the bottom -->
+  <div style="display:flex;align-items:center;gap:12px;margin-top:24px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.06);">
+    <svg width="28" height="28"><use href="#pug" width="28" height="28" color="#D4A843"/></svg>
+    <svg width="28" height="28"><use href="#pug" width="28" height="28" color="#D4A843"/></svg>
+    <span style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;color:rgba(255,255,255,0.2);">
+      EDITH &amp; ELENOR DID NOT REVIEW THIS DOCUMENT AND ACCEPT NO RESPONSIBILITY FOR ITS CONCLUSIONS.
+    </span>
+  </div>
+
+</div>
+
+    <!-- Footer -->
+    <div class="sources-footer reveal">
+      <div class="sources-footer-cities">
+        <div class="sfc-item">
+          <div class="sfc-dot" style="background:var(--u-mid);"></div>
+          UTRECHT
+        </div>
+        <div class="sfc-item">
+          <div class="sfc-dot" style="background:var(--l-mid);"></div>
+          LEIDEN
+        </div>
+        <div class="sfc-item">
+          <div class="sfc-dot" style="background:var(--d-mid);"></div>
+          DELFT
+        </div>
+      </div>
+      <p style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;color:var(--stone);">
+        Research compiled May 2026 &nbsp;&#xB7;&nbsp; Utrecht &middot; Leiden &middot; Delft Housing Analysis
+      </p>
     </div>
 
-  </div>
+  </div><!-- /wrap -->
 </section>
 
-</main>
-
 <script>
-// Progress bar
-window.addEventListener('scroll',()=>{
-  const pct=(window.scrollY/(document.documentElement.scrollHeight-window.innerHeight))*100;
-  document.getElementById('progress-bar').style.width=Math.min(pct,100)+'%';
+// ============================================================
+// MODULE 11 JS — Progress bar + Nav dots
+// Zero arrow functions, zero backticks
+// ============================================================
+
+// --- Progress bar ---
+var progressBar = document.getElementById('progress-bar');
+
+function updateProgressBar() {
+  if (!progressBar) return;
+  var scrollTop  = window.pageYOffset || document.documentElement.scrollTop;
+  var docHeight  = document.documentElement.scrollHeight - window.innerHeight;
+  var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  progressBar.style.width = Math.min(pct, 100) + '%';
+}
+
+window.addEventListener('scroll', updateProgressBar);
+updateProgressBar();
+
+// --- Nav dots active state ---
+var allSections = document.querySelectorAll('[data-section]');
+var allDots     = document.querySelectorAll('.nav-dot');
+
+function setActiveDot(sectionIndex) {
+  allDots.forEach(function(dot) {
+    dot.classList.remove('active');
+  });
+  var target = document.querySelector('.nav-dot[data-section="' + sectionIndex + '"]');
+  if (target) target.classList.add('active');
+}
+
+var sectionObserver = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) {
+      var idx = entry.target.getAttribute('data-section');
+      if (idx !== null) setActiveDot(idx);
+    }
+  });
+}, { threshold: 0.35 });
+
+allSections.forEach(function(section) {
+  sectionObserver.observe(section);
 });
 
-// Reveal on scroll
-const ro=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');ro.unobserve(e.target);}});
-},{threshold:0.1});
-document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
-
-// Nav dots
-const sections=document.querySelectorAll('[data-section]');
-const dots=document.querySelectorAll('.nav-dot');
-const so=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
-      const idx=e.target.dataset.section;
-      dots.forEach(d=>d.classList.remove('active'));
-      const ad=document.querySelector(`.nav-dot[data-section="${idx}"]`);
-      if(ad)ad.classList.add('active');
+// --- Nav dot click scroll ---
+allDots.forEach(function(dot) {
+  dot.addEventListener('click', function() {
+    var idx     = dot.getAttribute('data-section');
+    var target  = document.querySelector('[data-section="' + idx + '"]');
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
     }
   });
-},{threshold:0.35});
-sections.forEach(s=>so.observe(s));
-dots.forEach(d=>d.addEventListener('click',()=>{
-  const t=document.querySelector(`[data-section="${d.dataset.section}"]`);
-  if(t)t.scrollIntoView({behavior:'smooth'});
-}));
+});
 
-// Animate bars on scroll
-const barObs=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
-      e.target.querySelectorAll('.bar-fill[data-width]').forEach(b=>{
-        setTimeout(()=>b.style.width=b.dataset.width,200);
-      });
-      barObs.unobserve(e.target);
-    }
-  });
-},{threshold:0.2});
-document.querySelectorAll('.data-layer').forEach(el=>barObs.observe(el));
+// --- Set first dot active on load ---
+setActiveDot('0');
 
-// Generate Utrecht dot plot (147 dots: 130 apt, 17 house, 24 pug-gold mixed in)
-function buildDots(containerId, total, houses, pugs, cityClass){
-  const container=document.getElementById(containerId);
-  if(!container)return;
-  const pugsSet=new Set();
-  while(pugsSet.size<pugs)pugsSet.add(Math.floor(Math.random()*total));
-  const housesArr=[];
-  let hi=0;
-  while(housesArr.length<houses){const r=Math.floor(Math.random()*total);if(!pugsSet.has(r)&&!housesArr.includes(r))housesArr.push(r);}
-  const housesSet=new Set(housesArr);
-  for(let i=0;i<total;i++){
-    const d=document.createElement('div');
-    d.className='dp-dot';
-    if(pugsSet.has(i)) d.classList.add('dp-dot--pug');
-    else if(housesSet.has(i)) d.classList.add('dp-dot--house');
-    else d.classList.add(`dp-dot--${cityClass}`);
-    d.title=pugsSet.has(i)?'Pet-friendly listing':housesSet.has(i)?'Standalone house':'Apartment';
-    container.appendChild(d);
-  }
-}
-buildDots('dots-utrecht',147,17,24,'utrecht');
-buildDots('dots-leiden',117,3,15,'leiden');
-
-// Pug dots
-function buildPugDots(containerId, total, pugCount, cityClass){
-  const container=document.getElementById(containerId);
-  if(!container)return;
-  for(let i=0;i<total;i++){
-    const d=document.createElement('div');
-    d.style.cssText=`width:10px;height:10px;border-radius:50%;flex-shrink:0;`;
-    if(i<pugCount){
-      d.style.background='var(--pug-gold)';
-      d.style.boxShadow='0 0 0 2px rgba(212,168,67,0.3)';
-    } else {
-      d.style.background=cityClass==='utrecht'?'rgba(46,134,171,0.2)':'rgba(230,126,82,0.2)';
-    }
-    container.appendChild(d);
-  }
-}
-buildPugDots('pug-dots-utrecht',147,24,'utrecht');
-buildPugDots('pug-dots-leiden',117,15,'leiden');
-
-// Price strip visualizations
-function buildPriceStrip(containerId, listings, minPrice, maxPrice, color){
-  const container=document.getElementById(containerId);
-  if(!container)return;
-  listings.forEach(price=>{
-    const pct=((price-minPrice)/(maxPrice-minPrice))*100;
-    const mark=document.createElement('div');
-    mark.style.cssText=`position:absolute;left:${pct}%;top:50%;transform:translate(-50%,-50%);width:3px;height:28px;background:${color};opacity:0.45;border-radius:1px;`;
-    mark.title=`€${price}/month`;
-    container.appendChild(mark);
-  });
-}
-
-// Sample price distributions (representative of actual data shape)
-const utrechtPrices=[986,1050,1095,1100,1100,1150,1175,1175,1200,1200,1200,1225,1250,1250,1275,1275,1295,1300,1300,1325,1350,1350,1375,1395,1400,1400,1425,1450,1450,1475,1495,1500,1500,1500,1525,1550,1550,1575,1595,1600,1600,1625,1650,1650,1675,1695,1700,1725,1750,1775,1795,1800,1800,1850,1875,1895,1900,1950,1975,2000,2000,2050,2095,2100,2150,2200,2250,2295,2300,2350,2400,2450,2500,2550,2600,2650,2700,2750,2800,2900,2950,3000,3100,3200,3300,3400,3500,3600,3750,3900,4000,4200,4500,4750];
-const leidenPrices=[933,975,1000,1025,1050,1075,1095,1100,1125,1150,1175,1175,1200,1200,1225,1250,1250,1275,1295,1300,1325,1350,1375,1395,1400,1425,1450,1475,1495,1500,1525,1550,1575,1595,1600,1625,1650,1675,1695,1700,1725,1750,1775,1800,1850,1895,1900,1950,2000,2050,2100,2150,2200,2250,2300,2400,2500,2600,2750,2900,3000,3100,3250];
-buildPriceStrip('price-strip-utrecht',utrechtPrices,800,5000,'#2E86AB');
-buildPriceStrip('price-strip-leiden',leidenPrices,800,5000,'#E67E52');
 </script>
 </body>
 </html>
